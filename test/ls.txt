@@ -1,0 +1,6 @@
+a.out
+infile
+ls.txt
+mf.md
+outfile
+test.c

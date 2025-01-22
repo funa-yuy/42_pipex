@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/wait.h>
+
 
 // extern char	**environ;
 
@@ -24,7 +26,7 @@
 // }
 
 
-void	error(char **msg)
+void	error(char *msg)
 {
 	perror(msg);
 	exit(1);
@@ -38,19 +40,22 @@ int	main()
 		error("pipe");
 
 	pid_t pid = fork();
-	if (pid > 0)
-	{
-		// 入力口は不要なのでclose
-		if (cloese(filedes[0]) == -1)
-			error("close[0]");
-	}
-	else if (pid == 0)
+	if (pid == 0)
 	{
 		// 出力口は不要なのでclose
-		if (cloese(filedes[1]) == -1)
+		if (close(filedes[1]) == -1)
 			error("close[1]");
+		printf("Child\n");
+	}
+	else if (pid > 0)
+	{
+		// 入力口は不要なのでclose
+		if (close(filedes[0]) == -1)
+			error("close[0]");
+		printf("Parent\n");
+		wait(NULL);
 	}
 	else
 		error("fork");
-
+	return (0);
 }

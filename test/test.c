@@ -1,23 +1,56 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
-extern char	**environ;
+// extern char	**environ;
 
-int	data0;
-int	data1 = 10;
+// int	data0;
+// int	data1 = 10;
 
-int	main(int argc, char *argv[])
+// int	main(int argc, char *argv[])
+// {
+// 	(void)argc;
+// 	char	c;
+
+// 	printf("environ: \t%p\n", environ);
+// 	printf("argv: \t%p\n", argv);
+// 	printf("stack: \t%p\n", &c);
+
+// 	printf("bss: \t%p\n", &data0);
+// 	printf("data: \t%p\n", &data1);
+
+
+// 	return (EXIT_SUCCESS);
+// }
+
+
+void	error(char **msg)
 {
-	(void)argc;
-	char	c;
+	perror(msg);
+	exit(1);
+}
 
-	printf("environ: \t%p\n", environ);
-	printf("argv: \t%p\n", argv);
-	printf("stack: \t%p\n", &c);
+int	main()
+{
+	int	filedes[2];
 
-	printf("bss: \t%p\n", &data0);
-	printf("data: \t%p\n", &data1);
+	if (pipe(filedes) == -1)
+		error("pipe");
 
+	pid_t pid = fork();
+	if (pid > 0)
+	{
+		// 入力口は不要なのでclose
+		if (cloese(filedes[0]) == -1)
+			error("close[0]");
+	}
+	else if (pid == 0)
+	{
+		// 出力口は不要なのでclose
+		if (cloese(filedes[1]) == -1)
+			error("close[1]");
+	}
+	else
+		error("fork");
 
-	return (EXIT_SUCCESS);
 }

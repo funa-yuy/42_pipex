@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 
 
 // extern char	**environ;
@@ -32,30 +33,48 @@ void	error(char *msg)
 	exit(1);
 }
 
-int	main()
+int	main(int argc, char *argv[])
 {
-	int	filedes[2];
+	// int	filedes[2];
 
-	if (pipe(filedes) == -1)
-		error("pipe");
+	// if (pipe(filedes) == -1)
+	// 	error("pipe");
 
-	pid_t pid = fork();
-	if (pid == 0)
+	// pid_t pid = fork();
+	// if (pid == 0)
+	// {
+	// 	// 出力口は不要なのでclose
+	// 	if (close(filedes[1]) == -1)
+	// 		error("close[1]");
+	// 	printf("Child\n");
+	// }
+	// else if (pid > 0)
+	// {
+	// 	// 入力口は不要なのでclose
+	// 	if (close(filedes[0]) == -1)
+	// 		error("close[0]");
+	// 	printf("Parent\n");
+	// 	wait(NULL);
+	// }
+	// else
+	// 	error("fork");
+
+	(void)argc;
+	int	file_fd;
+
+	file_fd = open(argv[1], O_RDONLY);
+	if (file_fd < 0)
+		error("open");
+	close(0);
+
+	if (dup2(file_fd, 0) < 0)
 	{
-		// 出力口は不要なのでclose
-		if (close(filedes[1]) == -1)
-			error("close[1]");
-		printf("Child\n");
+		error("dup2");
+		close(file_fd);
 	}
-	else if (pid > 0)
-	{
-		// 入力口は不要なのでclose
-		if (close(filedes[0]) == -1)
-			error("close[0]");
-		printf("Parent\n");
-		wait(NULL);
-	}
-	else
-		error("fork");
+	close(file_fd);
+
+	execlp("cat", "cat", NULL);
+
 	return (0);
 }

@@ -4,4 +4,4 @@ a.out.dSYM/
 *.o
 *.a
 .vscode/
-reference
+reference/

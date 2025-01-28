@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execve_test_2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 13:50:55 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/01/26 17:07:45 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/01/28 18:16:04 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,15 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <stdio.h>
+
+//ls | wc
+
+void	error(char *msg)
+{
+	perror(msg);
+	exit(1);
+}
 
 int	main(int argc, char *argv[])
 {
@@ -21,55 +30,42 @@ int	main(int argc, char *argv[])
 	extern char	**environ;
 	int filedes[2];
 	char		*pargv[2];
-	char		*cargv[2];
+	char		*cargv[3];
 	pid_t		pid;
 
 	if (pipe(filedes) < 0)
-		exit(1);
-
-	if (pid = fork() < 0)
-		exit(1);
-
-	if (pid > 0)
-	{
-		if (close(filedes[0]) == -1)
-			exit(1);
-		pargv[0] = "wc";
-		pargv[1] = NULL;
-		execve("/bin/wc", pargv, environ);
-		wait(NULL);
-	}
-	else if (pid == 0)
-	{
-		if (close(filedes[1]) == -1)
-			exit(1);
-		cargv[0] = "ls";
-		cargv[1] = NULL;
-		execve("/bin/ls", cargv, environ);
-
-	}
-
-		if (pid = fork() < 0)
-		exit(1);
+		error("pipe(filedes)");
+	pid = fork();
+	if (pid < 0)
+		error("pid < 0");
 
 	if (pid > 0)
 	{
-		if (close(filedes[0]) == -1)
+		if (close(filedes[1]) == -1)
+			error("lose(filedes[1])");
+		wait(NULL);
+		close(0);
+		if (dup2(filedes[0], 0) < 0)
 			exit(1);
+		close(filedes[0]);
 		pargv[0] = "wc";
 		pargv[1] = NULL;
-		execve("/bin/wc", pargv, environ);
-		wait(NULL);
+		execve("/usr/bin/wc", pargv, environ);
+		error("wc failed");
 	}
 	else if (pid == 0)
 	{
-		if (close(filedes[1]) == -1)
+		if (close(filedes[0]) == -1)
+			error("close(filedes[0])");
+		close(1);
+		if (dup2(filedes[1], 1) < 0)
 			exit(1);
+		close(filedes[1]);
 		cargv[0] = "ls";
-		cargv[1] = NULL;
+		cargv[1] = argv[1];
+		cargv[2] = NULL;
 		execve("/bin/ls", cargv, environ);
-
+		error("ls failed");
 	}
-
 	return (0);
 }

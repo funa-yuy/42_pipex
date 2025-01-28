@@ -13,12 +13,9 @@ void	error(char *msg)
 
 int	main(int argc, char *argv[])
 {
-	(void)argc;
 	extern char	**environ;
 	int		fd;
-	char	*exeargv[3];
 	int filedes[2];
-	char		*pargv[2];
 	char		*cargv[3];
 	pid_t		pid;
 
@@ -58,8 +55,7 @@ int	main(int argc, char *argv[])
 		cargv[1] = argv[1];
 		cargv[2] = NULL;
 		execve("/bin/ls", cargv, environ);
-		if (close(filedes[1]) == -1)
-			error("close(filedes[1])");
+		error("execve failed");
 	}
 	return (0);
 }

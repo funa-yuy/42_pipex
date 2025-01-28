@@ -1,7 +1,8 @@
 a.out
 execve_test_1.c
 execve_test_2.c
-e
+execve_test
+infile
 ls.txt
 mf.md
 outfile

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execve_test_3.c                                    :+:      :+:    :+:   */
+/*   execve_test.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 13:50:55 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/01/28 20:35:51 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/01/28 18:25:16 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-//ls -l | wc -l
+//ls | wc
 
 void	error(char *msg)
 {
@@ -29,10 +29,11 @@ int	main(int argc, char *argv[])
 	(void)argc;
 	extern char	**environ;
 	int filedes[2];
-	char		*pargv[3];
-	char		*cargv[4];
+	char		*pargv[2];
+	char		*cargv[3];
 	pid_t		pid;
 
+	if (argc != )
 	if (pipe(filedes) < 0)
 		error("pipe(filedes)");
 	pid = fork();
@@ -44,18 +45,12 @@ int	main(int argc, char *argv[])
 		if (close(filedes[1]) == -1)
 			error("lose(filedes[1])");
 		wait(NULL);
-		char c;
-		int count;
-		while ((count = read(filedes[0], &c, 1)) > 0) {
-		putchar(c);
-		}
 		close(0);
 		if (dup2(filedes[0], 0) < 0)
 			exit(1);
 		close(filedes[0]);
 		pargv[0] = "wc";
-		pargv[1] = "-l";
-		pargv[2] = NULL;
+		pargv[1] = NULL;
 		execve("/usr/bin/wc", pargv, environ);
 		error("wc failed");
 	}
@@ -68,9 +63,8 @@ int	main(int argc, char *argv[])
 			exit(1);
 		close(filedes[1]);
 		cargv[0] = "ls";
-		pargv[1] = " -l";
-		cargv[2] = argv[1];
-		cargv[3] = NULL;
+		cargv[1] = argv[1];
+		cargv[2] = NULL;
 		execve("/bin/ls", cargv, environ);
 		error("ls failed");
 	}

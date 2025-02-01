@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 13:50:55 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/01/28 20:35:51 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/01/29 20:56:28 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,11 @@ int	main(int argc, char *argv[])
 		if (close(filedes[1]) == -1)
 			error("lose(filedes[1])");
 		wait(NULL);
-		char c;
-		int count;
-		while ((count = read(filedes[0], &c, 1)) > 0) {
-		putchar(c);
-		}
+		// char c;
+		// int count;
+		// while ((count = read(filedes[0], &c, 1)) > 0) {
+		// putchar(c);
+		// }
 		close(0);
 		if (dup2(filedes[0], 0) < 0)
 			exit(1);
@@ -68,7 +68,7 @@ int	main(int argc, char *argv[])
 			exit(1);
 		close(filedes[1]);
 		cargv[0] = "ls";
-		pargv[1] = " -l";
+		cargv[1] = "-l";
 		cargv[2] = argv[1];
 		cargv[3] = NULL;
 		execve("/bin/ls", cargv, environ);

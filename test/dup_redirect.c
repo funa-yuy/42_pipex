@@ -5,6 +5,8 @@
 #include <sys/wait.h>
 #include <stdio.h>
 
+//argv[1]ファイルを"wc"するプログラム
+
 int	main(int argc, char *argv[])
 {
 	(void)argc;

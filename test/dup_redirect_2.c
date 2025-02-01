@@ -5,6 +5,8 @@
 #include <sys/wait.h>
 #include <stdio.h>
 
+//"ls"の結果を、argv[2]ファイルに書き込むプログラム
+
 void	error(char *msg)
 {
 	perror(msg);

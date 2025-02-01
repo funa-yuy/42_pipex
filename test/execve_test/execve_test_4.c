@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 13:50:55 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/01 21:22:55 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/01 21:50:19 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-// ./a.out infile "ls -l" "wc -l" outfile
+// ./a.out ./ "ls -l -a" "wc -l"
 
 void	error(char *msg)
 {
@@ -28,7 +28,7 @@ void	error(char *msg)
 
 int	main(int argc, char *argv[], char **envp)
 {
-	int 	filedes[2];
+	int		filedes[2];
 	char	**pargv;
 	char	**cargv;
 	pid_t	pid;
@@ -50,11 +50,6 @@ int	main(int argc, char *argv[], char **envp)
 		if (close(filedes[1]) == -1)
 			error("lose(filedes[1])");
 		wait(NULL);
-		// char c;
-		// int count;
-		// while ((count = read(filedes[0], &c, 1)) > 0) {
-		// putchar(c);
-		// }
 		close(0);
 		if (dup2(filedes[0], 0) < 0)
 			exit(1);

@@ -1,0 +1,6 @@
+[submodule "libft]"]
+	path = libft]
+	url = https://github.com/funa-yuy/42_libft.git
+[submodule "libft"]
+	path = libft
+	url = https://github.com/funa-yuy/42_libft.git

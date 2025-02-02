@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/01 22:38:04 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/02 17:39:52 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,77 @@ void	error(char *msg)
 	exit(1);
 }
 
+char	*ft_getenv(const char *varname, char **envp)
+{
+	char	*path;
+	char	*tmp;
+	int		i;
+	int		v_len;
 
+	i = 0;
+	if (!varname || !envp)
+		return (NULL);
+	v_len = ft_strlen(varname);
+	if (varname[v_len - 1] != '=')
+	{
+		tmp = ft_strjoin(varname, "=");
+		if (!tmp)
+			error("ft_strjoin");
+		varname = tmp;
+		v_len++;
+	}
+	while (envp[i] != NULL)
+	{
+		if (ft_strncmp(envp[i], varname, v_len) == 0)
+		{
+			path = ft_substr(envp[i], v_len, ft_strlen(envp[i]) - v_len);
+			if (!path)
+				error("ft_substr");
+			return (path);
+		}
+		i++;
+	}
+	return (NULL);
+}
+
+char	*search_cmd_path(char *argv, char **envp)
+{
+	char	*path;
+	char	*full_path;
+	int		i;
+	char	**cmd;
+
+	path = ft_getenv("PATH", envp);
+	if (!path)
+		error("not found ft_getenv");
+	i = 0;
+	cmd = ft_split(path, ':');
+	if (!cmd)
+	{
+		free(path);
+		error("cmd");
+	}
+	free(path);
+	while (cmd[i] != NULL)
+	{
+		full_path = ft_strjoin(cmd[i], ft_strjoin("/", argv));
+		if (!full_path)
+		{
+			free(cmd);
+			error("full_path");
+		}
+		if (access(full_path, X_OK) == 0)
+		{
+			free(cmd);
+			return (full_path);
+		}
+		i++;
+	}
+	free(cmd);
+	return (NULL);
+}
+
+//絶対パスで来たとき、相対パスで来たとき
 int	main(int argc, char *argv[], char **envp)
 {
 	int		filedes[2];
@@ -37,19 +107,16 @@ int	main(int argc, char *argv[], char **envp)
 	pid_t	pid;
 	char	**cmd;
 	char	**cmd_2;
+	char	*cmd_path;
 	int		i;
 
+	cmd_path = search_cmd_path(argv[1], envp);
+	if (!cmd_path)
+		error("not found");
+	printf("cmd_path = %s\n", cmd_path);
 	// if (argc != 5)
 	// 	return (0);
-	char *path;
-	i = 0;
-	while(envp[i] != NULL)
-	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-			path = envp[i];
-		i++;
-	}
-	printf("path = %s\n", path);
+
 	// if (pipe(filedes) < 0)
 	// 	error("pipe(filedes)");
 	// pid = fork();

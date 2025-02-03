@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/03 01:13:19 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/03 13:59:59 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ char	*ft_getenv(const char *varname, char **envp)
 	if (!varname || !envp)
 		return (NULL);
 	v_len = ft_strlen(varname);
+	tmp = NULL;
 	if (varname[v_len - 1] != '=')
 	{
 		tmp = ft_strjoin(varname, "=");
@@ -57,10 +58,14 @@ char	*ft_getenv(const char *varname, char **envp)
 			path = ft_substr(envp[i], v_len, ft_strlen(envp[i]) - v_len);
 			if (!path)
 				error("ft_substr");
+			if (tmp)
+				free(tmp);
 			return (path);
 		}
 		i++;
 	}
+	if (tmp)
+		free(tmp);
 	return (NULL);
 }
 
@@ -69,11 +74,15 @@ char	*search_cmd_path(char *argv, char **dirs)
 	char	*full_path;
 	int		i;
 
+	i = 0;
 	while (dirs[i] != NULL)
 	{
-		full_path = ft_strjoin(dirs[i], ft_strjoin("/", argv));
+		printf("dirs[%d]=%s\n", i, dirs[i]);
+		// full_path = ft_strjoin(dirs[i], ft_strjoin("/", argv));
+		full_path = ft_strjoin(dirs[i], argv);
 		if (!full_path)
 		{
+			free(argv);
 			free(dirs);
 			error("full_path");
 		}
@@ -90,39 +99,52 @@ char	*get_cmd_path(char *argv, char **envp)
 	char	*path;
 	char	*cmd_path;
 	char	**dirs;
+	char	*tmp;
 
 	if (!argv || !envp)
 		return (NULL);
 	if (access(argv, X_OK) == 0)
 		return (argv);
+	printf("l.98\n");
 	path = ft_getenv("PATH", envp);
 	if (!path)
 		error("not found ft_getenv");
+	printf("l.102\n");
 	dirs = ft_split(path, ':');
 	free(path);
 	if (!dirs)
 		error("dirs");
-	cmd_path = search_cmd_path(argv, dirs);
+	printf("l.107\n");
+	tmp = ft_strjoin("/", argv);
+	if (!tmp)
+	{
+		free(dirs);
+		error("full_path");
+	}
+	cmd_path = search_cmd_path(tmp, dirs);
+	free(tmp);
 	free(dirs);
 	return (cmd_path);
 }
 
 int	main(int argc, char *argv[], char **envp)
 {
-	int		filedes[2];
-	char	**pargv;
-	char	**cargv;
-	pid_t	pid;
-	char	**cmd;
-	char	**cmd_2;
+	(void)argc;
+	// int		filedes[2];
+	// char	**pargv;
+	// char	**cargv;
+	// pid_t	pid;
+	// char	**cmd;
+	// char	**cmd_2;
 	char	*cmd_path;
-	int		i;
+	// int		i;
 
-
+	printf("argv[1] = %s\n", argv[1]);
 	cmd_path = get_cmd_path(argv[1], envp);
 	if (!cmd_path)
 		error("not found");
 	printf("cmd_path = %s\n", cmd_path);
+	free(cmd_path);
 	// if (argc != 5)
 	// 	return (0);
 

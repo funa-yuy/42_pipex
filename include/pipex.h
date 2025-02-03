@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/01 21:47:41 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/03 17:41:32 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,17 @@
 # include <stddef.h>
 # include <string.h>
 # include <stdint.h>
+# include <sys/stat.h>
+# include <fcntl.h>
+# include <stdio.h>
 
-char	*ft_substr(char const *s, unsigned int start, size_t len);
-char	**ft_split(char const *s, char c);
-size_t	ft_strlen(const char *s);
+/* get_cmd_path */
+void	free_double_pointer(char **dst);
+char	*ft_getenv(const char *varname, char **envp);
+char	*search_cmd_path(char *argv, char **dirs);
+char	*get_cmd_path(char *argv, char **envp);
+
+
+void	error(char *msg);
 
 #endif

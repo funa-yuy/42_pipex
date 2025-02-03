@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/03 13:59:59 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/03 14:39:48 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ char	*search_cmd_path(char *argv, char **dirs)
 		if (!full_path)
 		{
 			free(argv);
-			free(dirs);
+			free_double_pointer(dirs);
 			error("full_path");
 		}
 		if (access(full_path, X_OK) == 0)
@@ -92,6 +92,19 @@ char	*search_cmd_path(char *argv, char **dirs)
 		i++;
 	}
 	return (NULL);
+}
+
+void	free_double_pointer(char **dst)
+{
+	int	i;
+
+	i = 0;
+	if (dst[i])
+	{
+		free(dst[i]);
+		i++;
+	}
+	free(dst);
 }
 
 char	*get_cmd_path(char *argv, char **envp)
@@ -118,12 +131,12 @@ char	*get_cmd_path(char *argv, char **envp)
 	tmp = ft_strjoin("/", argv);
 	if (!tmp)
 	{
-		free(dirs);
+		free_double_pointer(dirs);
 		error("full_path");
 	}
 	cmd_path = search_cmd_path(tmp, dirs);
 	free(tmp);
-	free(dirs);
+	free_double_pointer(dirs);
 	return (cmd_path);
 }
 

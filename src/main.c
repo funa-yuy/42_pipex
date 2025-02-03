@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/03 14:39:48 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/03 17:16:14 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,19 @@ void	error(char *msg)
 {
 	perror(msg);
 	exit(1);
+}
+
+void	free_double_pointer(char **dst)
+{
+	int	i;
+
+	i = 0;
+	while (dst[i])
+	{
+		free(dst[i]);
+		i++;
+	}
+	free(dst);
 }
 
 char	*ft_getenv(const char *varname, char **envp)
@@ -77,7 +90,6 @@ char	*search_cmd_path(char *argv, char **dirs)
 	i = 0;
 	while (dirs[i] != NULL)
 	{
-		printf("dirs[%d]=%s\n", i, dirs[i]);
 		// full_path = ft_strjoin(dirs[i], ft_strjoin("/", argv));
 		full_path = ft_strjoin(dirs[i], argv);
 		if (!full_path)
@@ -94,19 +106,6 @@ char	*search_cmd_path(char *argv, char **dirs)
 	return (NULL);
 }
 
-void	free_double_pointer(char **dst)
-{
-	int	i;
-
-	i = 0;
-	if (dst[i])
-	{
-		free(dst[i]);
-		i++;
-	}
-	free(dst);
-}
-
 char	*get_cmd_path(char *argv, char **envp)
 {
 	char	*path;
@@ -118,16 +117,13 @@ char	*get_cmd_path(char *argv, char **envp)
 		return (NULL);
 	if (access(argv, X_OK) == 0)
 		return (argv);
-	printf("l.98\n");
 	path = ft_getenv("PATH", envp);
 	if (!path)
 		error("not found ft_getenv");
-	printf("l.102\n");
 	dirs = ft_split(path, ':');
 	free(path);
 	if (!dirs)
 		error("dirs");
-	printf("l.107\n");
 	tmp = ft_strjoin("/", argv);
 	if (!tmp)
 	{

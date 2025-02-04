@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/03 17:40:12 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/04 20:20:38 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,30 @@ int	main(int argc, char *argv[], char **envp)
 		error("not found");
 	printf("cmd_path = %s\n", cmd_path);
 	free(cmd_path);
+
+/*
+	pipe
+	fork
+	親
+		wait(&status)
+	子
+		char	**ag;
+		ag = split(argv[1]);
+		cmd_path = get_cmd_path(ag[0], envp);
+		execve(cmd_path, pargv, envp);
+		//エラー
+			free()
+	wait(&status);
+	子
+		char	**ag;
+		ag = split(argv[argc - 1]);
+		cmd_path = get_cmd_path(ag[0], envp);
+		execve(cmd_path, pargv, envp);
+		//エラー
+			free()
+	wait(&status);
+*/
+
 	// if (argc != 5)
 	// 	return (0);
 

@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/05 19:21:02 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/05 20:08:44 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,33 +24,65 @@ void	error(char *msg)
 	exit(1);
 }
 
+int	pid_2_prg(int pipe_fd[2])
+{
+	int count;
+	char c;
+
+	printf("fork2\n");
+
+	close(pipe_fd[1]);
+	while ((count = read(pipe_fd[0], &c, 1)) > 0) {
+		putchar(c);
+	}
+	close(pipe_fd[0]);
+	return (0);
+}
+
+int	pid_1_prg(int pipe_fd[2])
+{
+	printf("fork1\n");
+
+	char *p = "Hello, my kid.";
+	close(pipe_fd[0]);
+	while (*p != '\0') {
+		if (write(pipe_fd[1], p, 1) < 0) {
+				perror("write");
+				exit(1);
+		}
+		p++;
+	}
+	close(pipe_fd[1]);
+	return (0);
+}
+
 void	pipex(int argc, char *argv[], char **envp)
 {
-	pid_t	pid;
+	pid_t	pid_1;
 	pid_t	pid_2;
 	int	status;
-	int		filedes[2];
+	int		pipe_fd[2];
 
-	if (pipe(filedes) < 0)
-		error("pipe(filedes)");
-	pid = fork();
-	if (pid < 0)
-		error("pid < 0");
-	else if (pid == 0)
-	{
-		printf("fork1\n");
-		exit(0);
-	}
+
+	if (pipe(pipe_fd) < 0)
+		error("pipe(pipe_fd)");
+	pid_1 = fork();
+	if (pid_1 < 0)
+		error("pid_1 < 0");
+	else if (pid_1 == 0)
+		exit(pid_1_prg(pipe_fd));
+
 	pid_2 = fork();
 	if (pid_2 < 0)
 		error("pid_2 < 0");
 	else if (pid_2 == 0)
-	{
-		printf("fork2\n");
-		exit(0);
-	}
+		exit(pid_2_prg(pipe_fd));
+
+
 	printf("fork1の親です\n");
-	waitpid(pid, &status, 0);
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
+	waitpid(pid_1, &status, 0);
 	waitpid(pid_2, &status, 0);
 }
 

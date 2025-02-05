@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/05 20:08:44 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/05 21:40:18 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,34 +56,43 @@ int	pid_1_prg(int pipe_fd[2])
 	return (0);
 }
 
-void	pipex(int argc, char *argv[], char **envp)
+int	pipex(char *argv[], char **envp, int pipe_fd[2], int	i)
 {
 	pid_t	pid_1;
 	pid_t	pid_2;
 	int	status;
-	int		pipe_fd[2];
+	int	exit_status;
 
-
-	if (pipe(pipe_fd) < 0)
-		error("pipe(pipe_fd)");
+	if (i > 2)
+		return (0);
+	printf("fork1の親です\n");
 	pid_1 = fork();
 	if (pid_1 < 0)
 		error("pid_1 < 0");
 	else if (pid_1 == 0)
-		exit(pid_1_prg(pipe_fd));
-
-	pid_2 = fork();
-	if (pid_2 < 0)
-		error("pid_2 < 0");
-	else if (pid_2 == 0)
-		exit(pid_2_prg(pipe_fd));
-
-
-	printf("fork1の親です\n");
-	close(pipe_fd[0]);
-	close(pipe_fd[1]);
-	waitpid(pid_1, &status, 0);
-	waitpid(pid_2, &status, 0);
+	{
+		printf("fork[%d]の子供です\n", i);
+		exit(0);
+	}
+	printf("i = %d\n", i);
+	status = pipex(argv, envp, pipe_fd, i + 1);
+	if (i == 2)
+	{
+		waitpid(pid_1, &status, 0);
+		printf("i[%d]をまちました\n", i);
+		exit_status = status;
+	}
+	else
+	{
+		waitpid(pid_1, &status, 0);
+		printf("i[%d]をまちました\n", i);
+	}
+	// pid_2 = fork();
+	// if (pid_2 < 0)
+	// 	error("pid_2 < 0");
+	// else if (pid_2 == 0)
+	// 	exit(pid_2_prg(pipe_fd));
+	return (exit_status);
 }
 
 
@@ -96,7 +105,7 @@ int	main(int argc, char *argv[], char **envp)
 	char	**cmd_2;
 	char	*cmd_path;
 	int		i;
-
+	int		pipe_fd[2];
 	// printf("argv[1] = %s\n", argv[1]);
 	// cmd_path = get_cmd_path(argv[1], envp);
 	// if (!cmd_path)
@@ -107,8 +116,12 @@ int	main(int argc, char *argv[], char **envp)
 	// if (argc != 5)
 	// 	return (0);
 
-	pipex(argc, argv, envp);
-
+	if (pipe(pipe_fd) < 0)
+		error("pipe(pipe_fd)");
+	i = pipex(argv, envp, pipe_fd, 0);
+	printf("pipexのreturn = %d\n", i);
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
 
 /*
 	pipe

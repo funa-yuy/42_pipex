@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/04 20:20:38 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/05 19:21:02 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,24 +24,59 @@ void	error(char *msg)
 	exit(1);
 }
 
+void	pipex(int argc, char *argv[], char **envp)
+{
+	pid_t	pid;
+	pid_t	pid_2;
+	int	status;
+	int		filedes[2];
+
+	if (pipe(filedes) < 0)
+		error("pipe(filedes)");
+	pid = fork();
+	if (pid < 0)
+		error("pid < 0");
+	else if (pid == 0)
+	{
+		printf("fork1\n");
+		exit(0);
+	}
+	pid_2 = fork();
+	if (pid_2 < 0)
+		error("pid_2 < 0");
+	else if (pid_2 == 0)
+	{
+		printf("fork2\n");
+		exit(0);
+	}
+	printf("fork1の親です\n");
+	waitpid(pid, &status, 0);
+	waitpid(pid_2, &status, 0);
+}
+
+
 int	main(int argc, char *argv[], char **envp)
 {
 	(void)argc;
-	// int		filedes[2];
-	// char	**pargv;
-	// char	**cargv;
-	// pid_t	pid;
-	// char	**cmd;
-	// char	**cmd_2;
+	char	**pargv;
+	char	**cargv;
+	char	**cmd;
+	char	**cmd_2;
 	char	*cmd_path;
-	// int		i;
+	int		i;
 
-	printf("argv[1] = %s\n", argv[1]);
-	cmd_path = get_cmd_path(argv[1], envp);
-	if (!cmd_path)
-		error("not found");
-	printf("cmd_path = %s\n", cmd_path);
-	free(cmd_path);
+	// printf("argv[1] = %s\n", argv[1]);
+	// cmd_path = get_cmd_path(argv[1], envp);
+	// if (!cmd_path)
+	// 	error("not found");
+	// printf("cmd_path = %s\n", cmd_path);
+	// free(cmd_path);
+
+	// if (argc != 5)
+	// 	return (0);
+
+	pipex(argc, argv, envp);
+
 
 /*
 	pipe
@@ -53,6 +88,7 @@ int	main(int argc, char *argv[], char **envp)
 		ag = split(argv[1]);
 		cmd_path = get_cmd_path(ag[0], envp);
 		execve(cmd_path, pargv, envp);
+		pipeで
 		//エラー
 			free()
 	wait(&status);

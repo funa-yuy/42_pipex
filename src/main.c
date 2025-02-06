@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/06 11:03:16 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/06 15:40:30 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,37 +24,82 @@ void	error(char *msg)
 	exit(1);
 }
 
-int	pid_2_prg(int pipe_fd[2])
+// int	pid_2_prg(int pipe_fd[2])
+// {
+// 	int count;
+// 	char c;
+
+// 	printf("fork2\n");
+
+// 	close(pipe_fd[1]);
+// 	while ((count = read(pipe_fd[0], &c, 1)) > 0) {
+// 		putchar(c);
+// 	}
+// 	close(pipe_fd[0]);
+// 	return (0);
+// }
+
+// int	pid_1_prg(int pipe_fd[2])
+// {
+// 	printf("fork1\n");
+
+// 	char *p = "Hello, my kid.";
+// 	close(pipe_fd[0]);
+// 	while (*p != '\0') {
+// 		if (write(pipe_fd[1], p, 1) < 0) {
+// 				perror("write");
+// 				exit(1);
+// 		}
+// 		p++;
+// 	}
+// 	close(pipe_fd[1]);
+// 	return (0);
+// }
+
+int	parents(char *argv[], char **envp, int pipe_fd[2], int i)
 {
+	// char	*pargv[2];
 	int count;
 	char c;
+	printf("parents関数:fork[%d]の子供です。実行コマンドは→%s\n", i, argv[i + 1]);
 
-	printf("fork2\n");
-
-	close(pipe_fd[1]);
+	if (close(pipe_fd[1]) == -1)
+		error("lose(pipe_fd[1])");
 	while ((count = read(pipe_fd[0], &c, 1)) > 0) {
 		putchar(c);
 	}
 	close(pipe_fd[0]);
 	return (0);
+	// if (close(pipe_fd[1]) == -1)
+	// 	error("lose(pipe_fd[1])");
+	// close(0);
+	// if (dup2(pipe_fd[0], 0) < 0)
+	// 	exit(1);
+	// close(pipe_fd[0]);
+	// pargv[0] = argv[i + 1];
+	// pargv[1] = NULL;
+	// execve(pargv[0], pargv, envp);
+	// error("wc failed");
 }
 
-int	pid_1_prg(int pipe_fd[2])
+void	children(char *argv[], char **envp, int pipe_fd[2], int i)
 {
-	printf("fork1\n");
+	char	*cargv[2];
 
-	char *p = "Hello, my kid.";
-	close(pipe_fd[0]);
-	while (*p != '\0') {
-		if (write(pipe_fd[1], p, 1) < 0) {
-				perror("write");
-				exit(1);
-		}
-		p++;
-	}
+	printf("children関数:fork[%d]の子供です。実行コマンドは→%s\n", i, argv[i + 1]);
+
+	if (close(pipe_fd[0]) == -1)
+		error("close(pipe_fd[0])");
+	close(1);
+	if (dup2(pipe_fd[1], 1) < 0)
+		exit(1);
 	close(pipe_fd[1]);
-	return (0);
+	cargv[0] = argv[i + 1];
+	cargv[1] = NULL;
+	execve(cargv[0], cargv, envp);
+	error("ls failed");
 }
+
 
 int	pipex(char *argv[], char **envp, int pipe_fd[2], int	i)
 {
@@ -63,7 +108,7 @@ int	pipex(char *argv[], char **envp, int pipe_fd[2], int	i)
 	int	status;
 	int	exit_status;
 
-	if (i > 2)
+	if (i > 1)
 		return (0);
 	printf("fork1の親です\n");
 	pid_1 = fork();
@@ -71,13 +116,16 @@ int	pipex(char *argv[], char **envp, int pipe_fd[2], int	i)
 		error("pid_1 < 0");
 	else if (pid_1 == 0)
 	{
-		cmdを実行する前に、pipeで作ったoutに入れるようにする
-		次のcmdを実行する前に、pipeでinを使えるようにする
-		printf("fork[%d]の子供です\n", i);
+		// cmdを実行する前に、pipeで作ったoutに入れるようにする
+		// 次のcmdを実行する前に、pipeでinを使えるようにする
+		if (i == 0)
+			children(argv, envp, pipe_fd, i);
+		if (i == 1)
+			parents(argv, envp, pipe_fd, i);
 		exit(0);
 	}
 	printf("i = %d\n", i);
-	pipe(fd);
+	// pipe(fd);
 	status = pipex(argv, envp, pipe_fd, i + 1);
 	if (i == 2)
 	{

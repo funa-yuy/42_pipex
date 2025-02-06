@@ -71,10 +71,13 @@ int	pipex(char *argv[], char **envp, int pipe_fd[2], int	i)
 		error("pid_1 < 0");
 	else if (pid_1 == 0)
 	{
+		cmdを実行する前に、pipeで作ったoutに入れるようにする
+		次のcmdを実行する前に、pipeでinを使えるようにする
 		printf("fork[%d]の子供です\n", i);
 		exit(0);
 	}
 	printf("i = %d\n", i);
+	pipe(fd);
 	status = pipex(argv, envp, pipe_fd, i + 1);
 	if (i == 2)
 	{

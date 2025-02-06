@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/05 21:40:18 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/06 11:03:16 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ int	pipex(char *argv[], char **envp, int pipe_fd[2], int	i)
 		waitpid(pid_1, &status, 0);
 		printf("i[%d]をまちました\n", i);
 	}
+
 	// pid_2 = fork();
 	// if (pid_2 < 0)
 	// 	error("pid_2 < 0");

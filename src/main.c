@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/07 22:07:04 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/07 23:31:54 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 void	error(char *msg)
 {
+	perror("ERROR");
 	perror(msg);
 	exit(1);
 }
@@ -61,7 +62,7 @@ int	last_cmd(char *argv[], char **envp, int i)
 {
 	char	*pargv[3];
 
-	printf("last_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, argv[i + 1]);
+	fprintf(stderr, "last_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, argv[i + 1]);
 
 	// char c;
 	// int count;
@@ -81,6 +82,7 @@ int	last_cmd(char *argv[], char **envp, int i)
 	pargv[0] = argv[i + 1];
 	pargv[1] = "5";
 	pargv[2] = NULL;
+	perror("korekara\n");
 	execve(pargv[0], pargv, envp);
 	error("wc failed");
 }
@@ -88,7 +90,7 @@ int	last_cmd(char *argv[], char **envp, int i)
 void	first_cmd(char *argv[], char **envp, int i)
 {
 	char	*cargv[2];
-	printf("first_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, argv[i + 1]);
+	fprintf(stderr, "first_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, argv[i + 1]);
 	// if (close(pipe_fd[0]) == -1)
 	// 	error("close(pipe_fd[0])");
 
@@ -100,6 +102,7 @@ void	first_cmd(char *argv[], char **envp, int i)
 	// 	error("close");
 	cargv[0] = argv[i + 1];
 	cargv[1] = NULL;
+	perror("korekara\n");
 	execve(cargv[0], cargv, envp);
 	error("ls failed");
 }
@@ -108,7 +111,7 @@ void	middle_cmd(char *argv[], char **envp, int i)
 {
 	char	*cargv[2];
 
-	printf("middle_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, argv[i + 1]);
+	fprintf(stderr, "middle_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, argv[i + 1]);
 
 	// char c;
 	// int count;
@@ -132,6 +135,7 @@ void	middle_cmd(char *argv[], char **envp, int i)
 
 	cargv[0] = argv[i + 1];
 	cargv[1] = NULL;
+	perror("korekara\n");
 	execve(cargv[0], cargv, envp);
 	error("wc failed");
 }
@@ -144,38 +148,43 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int	i)
 	int	status;
 	int	exit_status;
 
-	printf("i = %d\n", i);
-	printf("pipe_fd[0] = %d pipe_fd[1] = %d \n", pipe_fd[0], pipe_fd[1]);
+	fprintf(stderr, "i = %d\n", i);
+	fprintf(stderr, "pipe_fd[0] = %d pipe_fd[1] = %d \n", pipe_fd[0], pipe_fd[1]);
 
 	if (i > 2)
 		return (0);
 
 	if (i != 0)
 	{
-		printf("ど\n");
-		if (dup2(pipe_fd[0], 0) < 0)
+		perror("ど\n");
+		if (dup2(pipe_fd[0], STDIN_FILENO) < 0)
 			error("dup");
-		printf("ゆ\n");
-		if (close(pipe_fd[0]) == -1)
-			error("close");
+		close(pipe_fd[0]);
 	}
-	if (i != 2)
-	{
-		if (i == 0)
-		{
-			close(pipe_fd[0]);
-			close(pipe_fd[1]);
-		}
-		printf("こ\n");
-		if (pipe(pipe_fd) < 0)
+
+	perror("ゆ\n");
+	if (pipe(pipe_fd) < 0)
 			error("pipe(pipe_fd)");
-		printf("pipe_fd[0] = %d pipe_fd[1] = %d \n", pipe_fd[0], pipe_fd[1]);
-		if (dup2(pipe_fd[1], 1) < 0)
+	fprintf(stderr, "pipe_fd[0] = %d pipe_fd[1] = %d \n", pipe_fd[0], pipe_fd[1]);
+
+	perror("こ\n");
+
+	if (i == 2)
+	{
+		int fd = open("outfile", O_CREAT | O_RDWR , 0644);
+		if (dup2(fd, STDOUT_FILENO) == -1)
 			error("dup");
-		printf("と\n");
-		if (close(pipe_fd[1]) == -1)
-			error("close");
 	}
+	else
+	{
+		if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
+			error("dup");
+	}
+
+	perror("と\n");
+	if (close(pipe_fd[1]) == -1)
+		error("close");
+
 	pid_1 = fork();
 	if (pid_1 < 0)
 		error("pid_1 < 0");
@@ -192,18 +201,24 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int	i)
 		exit(0);
 	}
 	status = pipex(argv, envp, pipe_fd, i + 1);
+	// if (dup2(pipe_fd[0], STDOUT_FILENO) == -1)
+	// 	error("dup");
+	perror("な\n");
 	close(pipe_fd[0]);
-	close(pipe_fd[1]);
+	// close(pipe_fd[1]);
 	if (i == 2)
 	{
+		perror("の\n");
+		fprintf(stderr, "i[%d] pid_1 = %d\n", i, pid_1);
 		waitpid(pid_1, &status, 0);
-		printf("i[%d]をまちました\n", i);
+		fprintf(stderr, "i[%d]をまちました\n", i);
 		exit_status = status;
 	}
 	else
 	{
+		fprintf(stderr, "i[%d] pid_1 = %d\n", i, pid_1);
 		waitpid(pid_1, &status, 0);
-		printf("i[%d]をまちました\n", i);
+		fprintf(stderr, "i[%d]をまちました\n", i);
 	}
 	return (exit_status);
 }
@@ -244,8 +259,8 @@ int	main(int argc, char *argv[], char **envp)
 	// 		error("pipe");
 	// 	}
 	// }
-	if (pipe(pipe_fd) < 0)
-		error("pipe(pipe_fd)");
+	// if (pipe(pipe_fd) < 0)
+	// 	error("pipe(pipe_fd)");
 	i = pipex(argv, envp, pipe_fd, 0);
 	printf("pipexのreturn = %d\n", i);
 	// close(pipe_fd[0]);

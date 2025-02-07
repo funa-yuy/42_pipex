@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/07 17:33:26 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/07 17:39:12 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,10 +216,10 @@ int	main(int argc, char *argv[], char **envp)
 	// 	error("pipe(pipe_fd_1)");
 
 	int num_cmds = argc - 1;
-	int pipe_fds[3];
+	int pipe_fds[4];
 
 	// パイプの作成
-	for (int i = 0; i < num_cmds - 1; i++) {
+	for (int i = 0; i < 2; i++) {
 		if (pipe(pipe_fds + i * 2) == -1) {
 			error("pipe");
 		}
@@ -289,7 +289,7 @@ int	main(int argc, char *argv[], char **envp)
 	// 	// pargv[1] = "-l";
 	// 	// pargv[2] = NULL;
 	// 	execve("/usr/bin/wc", pargv, envp);
-	// 	free(cmd_2);
+	// 	free(c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md_2);
 	// 	free(pargv);
 	// 	error("wc failed");
 	// }

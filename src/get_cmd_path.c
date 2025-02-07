@@ -6,12 +6,11 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:38:03 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/03 17:40:54 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/03 17:46:18 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
-#include "../libft/libft.h"
 
 void	free_double_pointer(char **dst)
 {

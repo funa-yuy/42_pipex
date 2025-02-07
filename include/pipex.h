@@ -6,13 +6,14 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/03 17:41:32 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/07 12:31:19 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
+#include "../libft/libft.h"
 # include <unistd.h>
 # include <stdlib.h>
 # include <stddef.h>
@@ -21,6 +22,7 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <stdio.h>
+ #include <sys/wait.h>
 
 /* get_cmd_path */
 void	free_double_pointer(char **dst);

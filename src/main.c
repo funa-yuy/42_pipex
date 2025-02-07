@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/07 17:39:12 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/07 22:07:04 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ void	error(char *msg)
 // 	return (0);
 // }
 
-int	last_cmd(char *argv[], char **envp, int pipe_fd[3], int i)
+
+int	last_cmd(char *argv[], char **envp, int i)
 {
 	char	*pargv[3];
 
@@ -67,16 +68,15 @@ int	last_cmd(char *argv[], char **envp, int pipe_fd[3], int i)
 	// while ((count = read(pipe_fd_1[0], &c, 1)) > 0) {
 	// 	putchar(c);
 	// }
-	close(pipe_fd[0]);
-	close(pipe_fd[3]);
-	if (close(pipe_fd[1]) == -1)
-		error("lose(pipe_fd[1])");
-	if (close(0) == -1)
-		error("close");
-	if (dup2(pipe_fd[2], 0) < 0)
-		error("dup");
-	if (close(pipe_fd[2]) == -1)
-		error("close");
+
+	// if (close(pipe_fd[1]) == -1)
+	// 	error("lose(pipe_fd[1])");
+	// if (close(0) == -1)
+	// 	error("close");
+	// if (dup2(pipe_fd[0], 0) < 0)
+	// 	error("dup");
+	// if (close(pipe_fd[0]) == -1)
+	// 	error("close");
 
 	pargv[0] = argv[i + 1];
 	pargv[1] = "5";
@@ -85,28 +85,26 @@ int	last_cmd(char *argv[], char **envp, int pipe_fd[3], int i)
 	error("wc failed");
 }
 
-void	first_cmd(char *argv[], char **envp, int pipe_fd[3], int i)
+void	first_cmd(char *argv[], char **envp, int i)
 {
 	char	*cargv[2];
+	printf("first_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, argv[i + 1]);
+	// if (close(pipe_fd[0]) == -1)
+	// 	error("close(pipe_fd[0])");
 
-	close(pipe_fd[2]);
-	close(pipe_fd[3]);
-	if (close(pipe_fd[0]) == -1)
-		error("close(pipe_fd[0])");
-
-	if (close(1) == -1)
-		error("close");
-	if (dup2(pipe_fd[1], 1) < 0)
-		error("dup");
-	if (close(pipe_fd[1]) == -1)
-		error("close");
+	// if (close(1) == -1)
+	// 	error("close");
+	// if (dup2(pipe_fd[1], 1) < 0)
+	// 	error("dup");
+	// if (close(pipe_fd[1]) == -1)
+	// 	error("close");
 	cargv[0] = argv[i + 1];
 	cargv[1] = NULL;
 	execve(cargv[0], cargv, envp);
 	error("ls failed");
 }
 
-void	middle_cmd(char *argv[], char **envp, int pipe_fd[3], int i)
+void	middle_cmd(char *argv[], char **envp, int i)
 {
 	char	*cargv[2];
 
@@ -117,24 +115,20 @@ void	middle_cmd(char *argv[], char **envp, int pipe_fd[3], int i)
 	// while ((count = read(pipe_fd[0], &c, 1)) > 0) {
 	// 	putchar(c);
 	// }
-	if (close(pipe_fd[1]) == -1)
-		error("close(pipe_fd[0])");
-	if (close(pipe_fd[2]) == -1)
-		error("close(pipe_fd[0])");
 
-	if (close(0) == -1)
-		error("close");
-	if (dup2(pipe_fd[0], 0) < 0)
-		error("dup");
-	if (close(pipe_fd[0]) == -1)
-		error("close");
+	// if (close(0) == -1)
+	// 	error("close");
+	// if (dup2(pipe_fd[0], 0) < 0)
+	// 	error("dup");
+	// if (close(pipe_fd[0]) == -1)
+	// 	error("close");
 
-	if (close(1) == -1)
-		error("close");
-	if (dup2(pipe_fd[3], 1) < 0)
-		error("dup");
-	if (close(pipe_fd[3]) == -1)
-		error("close");
+	// if (close(1) == -1)
+	// 	error("close");
+	// if (dup2(pipe_fd[1], 1) < 0)
+	// 	error("dup");
+	// if (close(pipe_fd[1]) == -1)
+	// 	error("close");
 
 	cargv[0] = argv[i + 1];
 	cargv[1] = NULL;
@@ -143,7 +137,7 @@ void	middle_cmd(char *argv[], char **envp, int pipe_fd[3], int i)
 }
 
 
-int	pipex(char *argv[], char **envp, int pipe_fd[3], int	i)
+int	pipex(char *argv[], char **envp, int *pipe_fd, int	i)
 {
 	pid_t	pid_1;
 	pid_t	pid_2;
@@ -151,29 +145,55 @@ int	pipex(char *argv[], char **envp, int pipe_fd[3], int	i)
 	int	exit_status;
 
 	printf("i = %d\n", i);
+	printf("pipe_fd[0] = %d pipe_fd[1] = %d \n", pipe_fd[0], pipe_fd[1]);
+
 	if (i > 2)
 		return (0);
-	printf("fork1の親です\n");
+
+	if (i != 0)
+	{
+		printf("ど\n");
+		if (dup2(pipe_fd[0], 0) < 0)
+			error("dup");
+		printf("ゆ\n");
+		if (close(pipe_fd[0]) == -1)
+			error("close");
+	}
+	if (i != 2)
+	{
+		if (i == 0)
+		{
+			close(pipe_fd[0]);
+			close(pipe_fd[1]);
+		}
+		printf("こ\n");
+		if (pipe(pipe_fd) < 0)
+			error("pipe(pipe_fd)");
+		printf("pipe_fd[0] = %d pipe_fd[1] = %d \n", pipe_fd[0], pipe_fd[1]);
+		if (dup2(pipe_fd[1], 1) < 0)
+			error("dup");
+		printf("と\n");
+		if (close(pipe_fd[1]) == -1)
+			error("close");
+	}
 	pid_1 = fork();
 	if (pid_1 < 0)
 		error("pid_1 < 0");
-	else if (pid_1 == 0)
+	if (pid_1 == 0)
 	{
 		// cmdを実行する前に、pipeで作ったoutに入れるようにする
 		// 次のcmdを実行する前に、pipeでinを使えるようにする
 		if (i == 0)
-			first_cmd(argv, envp, pipe_fd, i);
+			first_cmd(argv, envp, i);
 		if (i == 2)
-			last_cmd(argv, envp, pipe_fd, i);
+			last_cmd(argv, envp, i);
 		else
-			middle_cmd(argv, envp, pipe_fd, i);
+			middle_cmd(argv, envp, i);
 		exit(0);
 	}
 	status = pipex(argv, envp, pipe_fd, i + 1);
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
-	close(pipe_fd[2]);
-	close(pipe_fd[3]);
 	if (i == 2)
 	{
 		waitpid(pid_1, &status, 0);
@@ -198,7 +218,7 @@ int	main(int argc, char *argv[], char **envp)
 	char	**cmd_2;
 	char	*cmd_path;
 	int		i;
-	// int		pipe_fd[2];
+	int		pipe_fd[2];
 	// int		pipe_fd_1[2];
 
 	// printf("argv[1] = %s\n", argv[1]);
@@ -215,16 +235,18 @@ int	main(int argc, char *argv[], char **envp)
 	// if (pipe(pipe_fd_1) < 0)
 	// 	error("pipe(pipe_fd_1)");
 
-	int num_cmds = argc - 1;
-	int pipe_fds[4];
+	// int num_cmds = argc - 1;
+	// int pipe_fds[4];
 
-	// パイプの作成
-	for (int i = 0; i < 2; i++) {
-		if (pipe(pipe_fds + i * 2) == -1) {
-			error("pipe");
-		}
-	}
-	i = pipex(argv, envp, pipe_fds, 0);
+	// // パイプの作成
+	// for (int i = 0; i < 2; i++) {
+	// 	if (pipe(pipe_fds + i * 2) == -1) {
+	// 		error("pipe");
+	// 	}
+	// }
+	if (pipe(pipe_fd) < 0)
+		error("pipe(pipe_fd)");
+	i = pipex(argv, envp, pipe_fd, 0);
 	printf("pipexのreturn = %d\n", i);
 	// close(pipe_fd[0]);
 	// close(pipe_fd[1]);

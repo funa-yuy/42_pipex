@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/07 23:31:54 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/09 18:51:10 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ void	middle_cmd(char *argv[], char **envp, int i)
 }
 
 
-int	pipex(char *argv[], char **envp, int *pipe_fd, int	i)
+int	pipex(char *argv[], char **envp, int *pipe_fd, int fd_out, int	i)
 {
 	pid_t	pid_1;
 	pid_t	pid_2;
@@ -149,7 +149,7 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int	i)
 	int	exit_status;
 
 	fprintf(stderr, "i = %d\n", i);
-	fprintf(stderr, "pipe_fd[0] = %d pipe_fd[1] = %d \n", pipe_fd[0], pipe_fd[1]);
+	// fprintf(stderr, "pipe_fd[0] = %d pipe_fd[1] = %d \n", pipe_fd[0], pipe_fd[1]);
 
 	if (i > 2)
 		return (0);
@@ -165,14 +165,13 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int	i)
 	perror("ゆ\n");
 	if (pipe(pipe_fd) < 0)
 			error("pipe(pipe_fd)");
-	fprintf(stderr, "pipe_fd[0] = %d pipe_fd[1] = %d \n", pipe_fd[0], pipe_fd[1]);
 
 	perror("こ\n");
 
 	if (i == 2)
 	{
-		int fd = open("outfile", O_CREAT | O_RDWR , 0644);
-		if (dup2(fd, STDOUT_FILENO) == -1)
+		// int fd = open("outfile", O_CREAT | O_RDWR , 0644);
+		if (dup2(fd_out, STDOUT_FILENO) == -1)
 			error("dup");
 	}
 	else
@@ -181,7 +180,7 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int	i)
 			error("dup");
 	}
 
-	perror("と\n");
+	printf("と\n");
 	if (close(pipe_fd[1]) == -1)
 		error("close");
 
@@ -190,6 +189,7 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int	i)
 		error("pid_1 < 0");
 	if (pid_1 == 0)
 	{
+		fprintf(stderr, "pipe_fd[0] = %d pipe_fd[1] = %d , fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
 		// cmdを実行する前に、pipeで作ったoutに入れるようにする
 		// 次のcmdを実行する前に、pipeでinを使えるようにする
 		if (i == 0)
@@ -200,11 +200,11 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int	i)
 			middle_cmd(argv, envp, i);
 		exit(0);
 	}
-	status = pipex(argv, envp, pipe_fd, i + 1);
+	status = pipex(argv, envp, pipe_fd, fd_out, i + 1);
 	// if (dup2(pipe_fd[0], STDOUT_FILENO) == -1)
 	// 	error("dup");
 	perror("な\n");
-	close(pipe_fd[0]);
+	// close(pipe_fd[0]);
 	// close(pipe_fd[1]);
 	if (i == 2)
 	{
@@ -261,7 +261,8 @@ int	main(int argc, char *argv[], char **envp)
 	// }
 	// if (pipe(pipe_fd) < 0)
 	// 	error("pipe(pipe_fd)");
-	i = pipex(argv, envp, pipe_fd, 0);
+	int	fd_out = dup(STDOUT_FILENO);
+	i = pipex(argv, envp, pipe_fd, fd_out, 0);
 	printf("pipexのreturn = %d\n", i);
 	// close(pipe_fd[0]);
 	// close(pipe_fd[1]);

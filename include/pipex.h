@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/10 22:17:46 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/10 22:41:50 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,13 @@
 # define OUT_FILE	"./outfile"
 # define IN_FILE	"infile"
 
-/* fill cmds */
+/* pipex */
 int		pipex(char ***cmds, char **envp, int *pipe_fd, int fd_out, int cmd_num, int	i);
+
+/* child_process */
+void	first_cmd(char **cmd, char **envp, int i);
+void	middle_cmd(char **cmd, char **envp, int i);
+void	last_cmd(char **cmd, char **envp, int i);
 
 /* fill cmds */
 char	***fill_cmds(int argc, char *argv[], char **envp);

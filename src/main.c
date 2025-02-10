@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/10 22:37:24 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/10 22:39:53 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,75 +17,6 @@
 // ./a.out "ls" → ○
 // ./a.out /bin/ls → ○
 // ./a.out "ls " → ×
-
-void	last_cmd(char **cmd, char **envp, int i)
-{
-	fprintf(stderr, "last_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, cmd[0]);
-
-	// char c;
-	// int count;
-	// while ((count = read(pipe_fd_1[0], &c, 1)) > 0) {
-	// 	putchar(c);
-	// }
-
-	// if (close(pipe_fd[1]) == -1)
-	// 	error("lose(pipe_fd[1])");
-	// if (close(0) == -1)
-	// 	error("close");
-	// if (dup2(pipe_fd[0], 0) < 0)
-	// 	error("dup");
-	// if (close(pipe_fd[0]) == -1)
-	// 	error("close");
-
-	fprintf(stderr, "korekara\n");
-	execve(cmd[0], cmd, envp);
-	error("last_cmd");
-}
-
-void	first_cmd(char **cmd, char **envp, int i)
-{	fprintf(stderr, "first_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, cmd[0]);
-	// if (close(pipe_fd[0]) == -1)
-	// 	error("close(pipe_fd[0])");
-
-	// if (close(1) == -1)
-	// 	error("close");
-	// if (dup2(pipe_fd[1], 1) < 0)
-	// 	error("dup");
-	// if (close(pipe_fd[1]) == -1)
-	// 	error("close");
-	fprintf(stderr, "korekara\n");
-	execve(cmd[0], cmd, envp);
-	error("first_cmd");
-}
-
-void	middle_cmd(char **cmd, char **envp, int i)
-{
-	fprintf(stderr, "middle_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, cmd[0]);
-
-	// char c;
-	// int count;
-	// while ((count = read(pipe_fd[0], &c, 1)) > 0) {
-	// 	putchar(c);
-	// }
-
-	// if (close(0) == -1)
-	// 	error("close");
-	// if (dup2(pipe_fd[0], 0) < 0)
-	// 	error("dup");
-	// if (close(pipe_fd[0]) == -1)
-	// 	error("close");
-
-	// if (close(1) == -1)
-	// 	error("close");
-	// if (dup2(pipe_fd[1], 1) < 0)
-	// 	error("dup");
-	// if (close(pipe_fd[1]) == -1)
-	// 	error("close");
-
-	fprintf(stderr, "korekara\n");
-	execve(cmd[0], cmd, envp);
-	error("middle_cmd");
-}
 
 int	pipex(char ***cmds, char **envp, int *pipe_fd, int fd_out, int cmd_num, int	i)
 {

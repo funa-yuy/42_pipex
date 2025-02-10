@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/10 17:59:48 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/10 18:27:46 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,9 @@ void	last_cmd(char *argv[], char **envp, int i)
 	// 	error("close");
 
 	pargv[0] = argv[i + 1];
-	pargv[1] = "5";
+	pargv[1] = "7";
 	pargv[2] = NULL;
-	perror("korekara\n");
+	fprintf(stderr, "korekara\n");
 	execve(pargv[0], pargv, envp);
 	error("wc failed");
 }
@@ -102,7 +102,7 @@ void	first_cmd(char *argv[], char **envp, int i)
 	// 	error("close");
 	cargv[0] = argv[i + 1];
 	cargv[1] = NULL;
-	perror("korekara\n");
+	fprintf(stderr, "korekara\n");
 	execve(cargv[0], cargv, envp);
 	error("ls failed");
 }
@@ -135,7 +135,7 @@ void	middle_cmd(char *argv[], char **envp, int i)
 
 	cargv[0] = argv[i + 1];
 	cargv[1] = NULL;
-	perror("korekara\n");
+	fprintf(stderr, "korekara\n");
 	execve(cargv[0], cargv, envp);
 	error("wc failed");
 }
@@ -151,24 +151,20 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int fd_out, int	i)
 	fprintf(stderr, "i = %d\n", i);
 	fprintf(stderr, "最初　pipe_fd[0] = %d pipe_fd[1] = %d \n", pipe_fd[0], pipe_fd[1]);
 
-	if (i > 1)
+	if (i > 2)
 		return (0);
 
 	if (i != 0)
 	{
-		perror("ど\n");
 		if (dup2(pipe_fd[0], STDIN_FILENO) < 0)
 			error("dup");
 		close(pipe_fd[0]);
 	}
-
-	perror("ゆ\n");
 	if (pipe(pipe_fd) < 0)
-			error("pipe(pipe_fd)");
+		error("pipe(pipe_fd)");
 	fprintf(stderr, "次時　pipe_fd[0] = %d pipe_fd[1] = %d , fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
-	perror("こ\n");
 
-	if (i == 1)
+	if (i == 2)
 	{
 		int fd = open("outfile", O_CREAT | O_RDWR , 0644);
 		if (dup2(fd_out, STDOUT_FILENO) == -1)
@@ -180,7 +176,6 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int fd_out, int	i)
 			error("dup");
 	}
 
-	printf("と\n");
 	if (close(pipe_fd[1]) == -1)
 		error("close");
 
@@ -190,25 +185,17 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int fd_out, int	i)
 	if (pid_1 == 0)
 	{
 		fprintf(stderr, "最後　pipe_fd[0] = %d pipe_fd[1] = %d , fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
-		// cmdを実行する前に、pipeで作ったoutに入れるようにする
-		// 次のcmdを実行する前に、pipeでinを使えるようにする
 		if (i == 0)
 			first_cmd(argv, envp, i);
-		if (i == 1)
-			middle_cmd(argv, envp, i);
+		if (i == 2)
+			last_cmd(argv, envp, i);
 		else
 			middle_cmd(argv, envp, i);
 		exit(0);
 	}
 	status = pipex(argv, envp, pipe_fd, fd_out, i + 1);
-	// if (dup2(pipe_fd[0], STDOUT_FILENO) == -1)
-	// 	error("dup");
-	perror("な\n");
-	// close(pipe_fd[0]);
-	// close(pipe_fd[1]);
-	if (i == 1)
+	if (i == 2)
 	{
-		perror("の\n");
 		fprintf(stderr, "i[%d] pid_1 = %d\n", i, pid_1);
 		waitpid(pid_1, &status, 0);
 		fprintf(stderr, "i[%d]をまちました\n", i);
@@ -234,7 +221,7 @@ int	main(int argc, char *argv[], char **envp)
 	char	*cmd_path;
 	int		i;
 	int		pipe_fd[2];
-	// int		pipe_fd_1[2];
+
 
 	// printf("argv[1] = %s\n", argv[1]);
 	// cmd_path = get_cmd_path(argv[1], envp);
@@ -243,29 +230,12 @@ int	main(int argc, char *argv[], char **envp)
 	// printf("cmd_path = %s\n", cmd_path);
 	// free(cmd_path);
 
-	// if (argc != 5)
-	// 	return (0);
-	// if (pipe(pipe_fd) < 0)
-	// 	error("pipe(pipe_fd)");
-	// if (pipe(pipe_fd_1) < 0)
-	// 	error("pipe(pipe_fd_1)");
-
-	// int num_cmds = argc - 1;
-	// int pipe_fds[4];
-
-	// // パイプの作成
-	// for (int i = 0; i < 2; i++) {
-	// 	if (pipe(pipe_fds + i * 2) == -1) {
-	// 		error("pipe");
-	// 	}
-	// }
-	// if (pipe(pipe_fd) < 0)
-	// 	error("pipe(pipe_fd)");
 	int	fd_out = dup(STDOUT_FILENO);
 	i = pipex(argv, envp, pipe_fd, fd_out, 0);
 	printf("pipexのreturn = %d\n", i);
-	// close(pipe_fd[0]);
-	// close(pipe_fd[1]);
+
+	return (0);
+}
 
 /*
 	pipe
@@ -290,6 +260,18 @@ int	main(int argc, char *argv[], char **envp)
 			free()
 	wait(&status);
 */
+
+// int	main(int argc, char *argv[], char **envp)
+// {
+// 	(void)argc;
+// 	char	**pargv;
+// 	char	**cargv;
+// 	char	**cmd;
+// 	char	**cmd_2;
+// 	char	*cmd_path;
+// 	int		i;
+// 	int		filedes[2];
+
 
 	// if (argc != 5)
 	// 	return (0);
@@ -358,5 +340,5 @@ int	main(int argc, char *argv[], char **envp)
 	// 	free(cargv);
 	// 	error("ls failed");
 	// }
-	return (0);
-}
+// 	return (0);
+// }

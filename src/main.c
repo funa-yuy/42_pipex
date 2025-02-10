@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/10 18:27:46 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/10 18:46:39 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,51 +140,27 @@ void	middle_cmd(char *argv[], char **envp, int i)
 	error("wc failed");
 }
 
-
 int	pipex(char *argv[], char **envp, int *pipe_fd, int fd_out, int	i)
 {
 	pid_t	pid_1;
 	pid_t	pid_2;
-	int	status;
-	int	exit_status;
+	int		status;
+	int		exit_status;
 
 	fprintf(stderr, "i = %d\n", i);
-	fprintf(stderr, "最初　pipe_fd[0] = %d pipe_fd[1] = %d \n", pipe_fd[0], pipe_fd[1]);
-
+	fprintf(stderr, "最初　pipe_fd[0] = %d, pipe_fd[1] = %d, fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
 	if (i > 2)
 		return (0);
 
-	if (i != 0)
-	{
-		if (dup2(pipe_fd[0], STDIN_FILENO) < 0)
-			error("dup");
-		close(pipe_fd[0]);
-	}
-	if (pipe(pipe_fd) < 0)
-		error("pipe(pipe_fd)");
-	fprintf(stderr, "次時　pipe_fd[0] = %d pipe_fd[1] = %d , fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
-
-	if (i == 2)
-	{
-		int fd = open("outfile", O_CREAT | O_RDWR , 0644);
-		if (dup2(fd_out, STDOUT_FILENO) == -1)
-			error("dup");
-	}
-	else
-	{
-		if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
-			error("dup");
-	}
-
-	if (close(pipe_fd[1]) == -1)
-		error("close");
+	setup_fd(pipe_fd, fd_out, i);
+	fprintf(stderr, "次時　pipe_fd[0] = %d, pipe_fd[1] = %d, fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
 
 	pid_1 = fork();
 	if (pid_1 < 0)
 		error("pid_1 < 0");
 	if (pid_1 == 0)
 	{
-		fprintf(stderr, "最後　pipe_fd[0] = %d pipe_fd[1] = %d , fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
+		fprintf(stderr, "最後　pipe_fd[0] = %d, pipe_fd[1] = %d, fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
 		if (i == 0)
 			first_cmd(argv, envp, i);
 		if (i == 2)

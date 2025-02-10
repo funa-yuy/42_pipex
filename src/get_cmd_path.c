@@ -6,24 +6,11 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:38:03 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/10 20:19:39 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/10 21:46:30 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
-
-void	free_double_pointer(char **dst)
-{
-	int	i;
-
-	i = 0;
-	while (dst[i])
-	{
-		free(dst[i]);
-		i++;
-	}
-	free(dst);
-}
 
 char	*ft_getenv(const char *varname, char **envp)
 {
@@ -71,7 +58,6 @@ char	*search_cmd_path(char *argv, char **dirs)
 	i = 0;
 	while (dirs[i] != NULL)
 	{
-		// full_path = ft_strjoin(dirs[i], ft_strjoin("/", argv));
 		full_path = ft_strjoin(dirs[i], argv);
 		if (!full_path)
 		{

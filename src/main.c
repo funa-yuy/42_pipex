@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/10 21:08:45 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/10 21:42:16 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,6 @@
 // ./a.out "ls" → ○
 // ./a.out /bin/ls → ○
 // ./a.out "ls " → ×
-
-void	error(char *msg)
-{
-	perror("ERROR");
-	perror(msg);
-	exit(1);
-}
 
 // int	pid_2_prg(int pipe_fd[2])
 // {
@@ -206,13 +199,7 @@ int	main(int argc, char *argv[], char **envp)
 		printf("\n");
 		i++;
 	}
-	i = 0;
-	while(i < argc - 1)
-	{
-		free_double_pointer(cmds[i]);
-		i++;
-	}
-	free(cmds);
+	free_triple_pointer(cmds);
 
 	// int	fd_out = dup(STDOUT_FILENO);
 	// i = pipex(argv, envp, pipe_fd, fd_out, 0);

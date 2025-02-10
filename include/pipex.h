@@ -6,14 +6,17 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/10 21:28:59 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/10 22:17:46 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
+/* header file*/
 # include "../libft/libft.h"
+
+/* library */
 # include <unistd.h>
 # include <stdlib.h>
 # include <stddef.h>
@@ -24,6 +27,13 @@
 # include <stdio.h>
 # include <sys/wait.h>
 
+/* define */
+# define OUT_FILE	"./outfile"
+# define IN_FILE	"infile"
+
+/* fill cmds */
+int		pipex(char ***cmds, char **envp, int *pipe_fd, int fd_out, int cmd_num, int	i);
+
 /* fill cmds */
 char	***fill_cmds(int argc, char *argv[], char **envp);
 
@@ -33,7 +43,7 @@ char	*search_cmd_path(char *argv, char **dirs);
 char	*get_cmd_path(char *argv, char **envp);
 
 /* setup fd & pipe */
-void	setup_fd(int *pipe_fd, int fd_out, int i);
+void	setup_fd(int *pipe_fd, int fd_out, int cmd_num, int i);
 
 /* utils */
 void	free_double_pointer(char **str);

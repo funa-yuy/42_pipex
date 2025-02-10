@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/10 21:42:16 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/10 22:37:24 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,44 +18,9 @@
 // ./a.out /bin/ls → ○
 // ./a.out "ls " → ×
 
-// int	pid_2_prg(int pipe_fd[2])
-// {
-// 	int count;
-// 	char c;
-
-// 	printf("fork2\n");
-
-// 	close(pipe_fd[1]);
-// 	while ((count = read(pipe_fd[0], &c, 1)) > 0) {
-// 		putchar(c);
-// 	}
-// 	close(pipe_fd[0]);
-// 	return (0);
-// }
-
-// int	pid_1_prg(int pipe_fd[2])
-// {
-// 	printf("fork1\n");
-
-// 	char *p = "Hello, my kid.";
-// 	close(pipe_fd[0]);
-// 	while (*p != '\0') {
-// 		if (write(pipe_fd[1], p, 1) < 0) {
-// 				perror("write");
-// 				exit(1);
-// 		}
-// 		p++;
-// 	}
-// 	close(pipe_fd[1]);
-// 	return (0);
-// }
-
-
-void	last_cmd(char *argv[], char **envp, int i)
+void	last_cmd(char **cmd, char **envp, int i)
 {
-	char	*pargv[3];
-
-	fprintf(stderr, "last_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, argv[i + 1]);
+	fprintf(stderr, "last_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, cmd[0]);
 
 	// char c;
 	// int count;
@@ -72,18 +37,13 @@ void	last_cmd(char *argv[], char **envp, int i)
 	// if (close(pipe_fd[0]) == -1)
 	// 	error("close");
 
-	pargv[0] = argv[i + 1];
-	pargv[1] = "7";
-	pargv[2] = NULL;
 	fprintf(stderr, "korekara\n");
-	execve(pargv[0], pargv, envp);
-	error("wc failed");
+	execve(cmd[0], cmd, envp);
+	error("last_cmd");
 }
 
-void	first_cmd(char *argv[], char **envp, int i)
-{
-	char	*cargv[2];
-	fprintf(stderr, "first_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, argv[i + 1]);
+void	first_cmd(char **cmd, char **envp, int i)
+{	fprintf(stderr, "first_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, cmd[0]);
 	// if (close(pipe_fd[0]) == -1)
 	// 	error("close(pipe_fd[0])");
 
@@ -93,18 +53,14 @@ void	first_cmd(char *argv[], char **envp, int i)
 	// 	error("dup");
 	// if (close(pipe_fd[1]) == -1)
 	// 	error("close");
-	cargv[0] = argv[i + 1];
-	cargv[1] = NULL;
 	fprintf(stderr, "korekara\n");
-	execve(cargv[0], cargv, envp);
-	error("ls failed");
+	execve(cmd[0], cmd, envp);
+	error("first_cmd");
 }
 
-void	middle_cmd(char *argv[], char **envp, int i)
+void	middle_cmd(char **cmd, char **envp, int i)
 {
-	char	*cargv[2];
-
-	fprintf(stderr, "middle_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, argv[i + 1]);
+	fprintf(stderr, "middle_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, cmd[0]);
 
 	// char c;
 	// int count;
@@ -126,26 +82,23 @@ void	middle_cmd(char *argv[], char **envp, int i)
 	// if (close(pipe_fd[1]) == -1)
 	// 	error("close");
 
-	cargv[0] = argv[i + 1];
-	cargv[1] = NULL;
 	fprintf(stderr, "korekara\n");
-	execve(cargv[0], cargv, envp);
-	error("wc failed");
+	execve(cmd[0], cmd, envp);
+	error("middle_cmd");
 }
 
-int	pipex(char *argv[], char **envp, int *pipe_fd, int fd_out, int	i)
+int	pipex(char ***cmds, char **envp, int *pipe_fd, int fd_out, int cmd_num, int	i)
 {
 	pid_t	pid_1;
-	pid_t	pid_2;
 	int		status;
 	int		exit_status;
 
 	fprintf(stderr, "i = %d\n", i);
 	fprintf(stderr, "最初　pipe_fd[0] = %d, pipe_fd[1] = %d, fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
-	if (i > 2)
+	if (i > cmd_num)
 		return (0);
 
-	setup_fd(pipe_fd, fd_out, i);
+	setup_fd(pipe_fd, fd_out, cmd_num, i);
 	fprintf(stderr, "次時　pipe_fd[0] = %d, pipe_fd[1] = %d, fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
 
 	pid_1 = fork();
@@ -154,16 +107,17 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int fd_out, int	i)
 	if (pid_1 == 0)
 	{
 		fprintf(stderr, "最後　pipe_fd[0] = %d, pipe_fd[1] = %d, fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
+		fprintf(stderr, "%d回目　cmd = %s\n", i, cmds[i][0]);
 		if (i == 0)
-			first_cmd(argv, envp, i);
-		if (i == 2)
-			last_cmd(argv, envp, i);
+			first_cmd(cmds[i], envp, i);
+		if (i == cmd_num - 1)
+			last_cmd(cmds[i], envp, i);
 		else
-			middle_cmd(argv, envp, i);
+			middle_cmd(cmds[i], envp, i);
 		exit(0);
 	}
-	status = pipex(argv, envp, pipe_fd, fd_out, i + 1);
-	if (i == 2)
+	status = pipex(cmds, envp, pipe_fd, fd_out, cmd_num, i + 1);
+	if (i == cmd_num - 1)
 	{
 		fprintf(stderr, "i[%d] pid_1 = %d\n", i, pid_1);
 		waitpid(pid_1, &status, 0);
@@ -184,10 +138,11 @@ int	main(int argc, char *argv[], char **envp)
 	char	***cmds;
 	int		i;
 	int		pipe_fd[2];
+	int		fd_out;
 
 	cmds = fill_cmds(argc, argv, envp);
 	i = 0;
-	while(i < argc - 1)
+	while (i < argc - 1)
 	{
 		printf("cmds[%d]= ", i);
 		int	j = 0;
@@ -199,11 +154,11 @@ int	main(int argc, char *argv[], char **envp)
 		printf("\n");
 		i++;
 	}
-	free_triple_pointer(cmds);
 
-	// int	fd_out = dup(STDOUT_FILENO);
-	// i = pipex(argv, envp, pipe_fd, fd_out, 0);
-	// printf("pipexのreturn = %d\n", i);
+	fd_out = dup(STDOUT_FILENO);
+	i = pipex(cmds, envp, pipe_fd, fd_out, argc - 1, 0);
+	printf("pipexのreturn = %d\n", i);
+	free_triple_pointer(cmds);
 
 	return (0);
 }

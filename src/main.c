@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/10 18:46:39 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/10 20:53:23 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,14 +189,10 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int fd_out, int	i)
 
 int	main(int argc, char *argv[], char **envp)
 {
-	(void)argc;
-	char	**pargv;
-	char	**cargv;
-	char	**cmd;
-	char	**cmd_2;
-	char	*cmd_path;
+	char	***cmds;
 	int		i;
 	int		pipe_fd[2];
+	char	*tmp;
 
 
 	// printf("argv[1] = %s\n", argv[1]);
@@ -206,9 +202,47 @@ int	main(int argc, char *argv[], char **envp)
 	// printf("cmd_path = %s\n", cmd_path);
 	// free(cmd_path);
 
-	int	fd_out = dup(STDOUT_FILENO);
-	i = pipex(argv, envp, pipe_fd, fd_out, 0);
-	printf("pipexのreturn = %d\n", i);
+	cmds = (char ***)malloc(sizeof(char **) * (argc - 1));
+	if (!cmds)
+		error("malloc");
+	i = 0;
+	while(i < argc - 1)
+	{
+		cmds[i] = ft_split(argv[i + 1], ' ');
+		if (!cmds)
+			error("split");
+		tmp = NULL;
+		tmp = get_cmd_path(cmds[i][0], envp);
+		if (!tmp)
+			error("get_cmd_path");
+		free(cmds[i][0]);
+		cmds[i][0] = tmp;
+		i++;
+	}
+	i = 0;
+	while(i < argc - 1)
+	{
+		printf("cmds[%d]= ", i);
+		int	j = 0;
+		while (cmds[i][j] != NULL)
+		{
+			printf("\"%s\" ",cmds[i][j]);
+			j++;
+		}
+		printf("\n");
+		i++;
+	}
+	i = 0;
+	while(i < argc - 1)
+	{
+		free_double_pointer(cmds[i]);
+		i++;
+	}
+	free(cmds);
+
+	// int	fd_out = dup(STDOUT_FILENO);
+	// i = pipex(argv, envp, pipe_fd, fd_out, 0);
+	// printf("pipexのreturn = %d\n", i);
 
 	return (0);
 }

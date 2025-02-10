@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:38:03 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/03 17:46:18 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/10 20:19:39 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,8 @@ char	*get_cmd_path(char *argv, char **envp)
 	if (!path)
 		error("not found ft_getenv");
 	dirs = ft_split(path, ':');
+	if (!dirs)
+		error("split");
 	free(path);
 	if (!dirs)
 		error("dirs");

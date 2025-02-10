@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/10 18:44:14 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/10 21:09:40 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include <sys/wait.h>
+
+/* fill cmds */
+char	***fill_cmds(int argc, char *argv[], char **envp);
 
 /* get_cmd_path */
 void	free_double_pointer(char **dst);

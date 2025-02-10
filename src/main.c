@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/09 18:51:10 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/10 17:59:48 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	error(char *msg)
 // }
 
 
-int	last_cmd(char *argv[], char **envp, int i)
+void	last_cmd(char *argv[], char **envp, int i)
 {
 	char	*pargv[3];
 
@@ -149,9 +149,9 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int fd_out, int	i)
 	int	exit_status;
 
 	fprintf(stderr, "i = %d\n", i);
-	// fprintf(stderr, "pipe_fd[0] = %d pipe_fd[1] = %d \n", pipe_fd[0], pipe_fd[1]);
+	fprintf(stderr, "最初　pipe_fd[0] = %d pipe_fd[1] = %d \n", pipe_fd[0], pipe_fd[1]);
 
-	if (i > 2)
+	if (i > 1)
 		return (0);
 
 	if (i != 0)
@@ -165,12 +165,12 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int fd_out, int	i)
 	perror("ゆ\n");
 	if (pipe(pipe_fd) < 0)
 			error("pipe(pipe_fd)");
-
+	fprintf(stderr, "次時　pipe_fd[0] = %d pipe_fd[1] = %d , fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
 	perror("こ\n");
 
-	if (i == 2)
+	if (i == 1)
 	{
-		// int fd = open("outfile", O_CREAT | O_RDWR , 0644);
+		int fd = open("outfile", O_CREAT | O_RDWR , 0644);
 		if (dup2(fd_out, STDOUT_FILENO) == -1)
 			error("dup");
 	}
@@ -189,13 +189,13 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int fd_out, int	i)
 		error("pid_1 < 0");
 	if (pid_1 == 0)
 	{
-		fprintf(stderr, "pipe_fd[0] = %d pipe_fd[1] = %d , fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
+		fprintf(stderr, "最後　pipe_fd[0] = %d pipe_fd[1] = %d , fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
 		// cmdを実行する前に、pipeで作ったoutに入れるようにする
 		// 次のcmdを実行する前に、pipeでinを使えるようにする
 		if (i == 0)
 			first_cmd(argv, envp, i);
-		if (i == 2)
-			last_cmd(argv, envp, i);
+		if (i == 1)
+			middle_cmd(argv, envp, i);
 		else
 			middle_cmd(argv, envp, i);
 		exit(0);
@@ -206,7 +206,7 @@ int	pipex(char *argv[], char **envp, int *pipe_fd, int fd_out, int	i)
 	perror("な\n");
 	// close(pipe_fd[0]);
 	// close(pipe_fd[1]);
-	if (i == 2)
+	if (i == 1)
 	{
 		perror("の\n");
 		fprintf(stderr, "i[%d] pid_1 = %d\n", i, pid_1);

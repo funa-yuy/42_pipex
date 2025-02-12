@@ -71,6 +71,7 @@
 		close();→pipe_fd[1]をclose
 
 		子：pipe_fd[0]
+		親：pipe_fd[0]
 	- middle_cmd
 		dup2();→STDINをpipe_fd[0]に
 		close();→pipe_fd[0]をclose
@@ -85,6 +86,7 @@
 		dup2();→STDOUTをfd_outに
 
 		子：
+		親：
 
 
 - first_cmd関数とmiddle_cmd関数で、close(pipe_fd[0])しない場合

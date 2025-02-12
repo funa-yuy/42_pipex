@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/12 13:58:48 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/12 17:15:55 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,17 +48,18 @@ int	pipex(char ***cmds, char **envp, int *pipe_fd, int fd_out, int cmd_num, int	
 		exit(0);
 	}
 	exit_status = pipex(cmds, envp, pipe_fd, fd_out, cmd_num, i + 1);
-	waitpid(pid_1, &status, 0);
 	if (i == cmd_num - 1)
 	{
 		// fprintf(stderr, "i[%d] pid_1 = %d\n", i, pid_1);
 		waitpid(pid_1, &status, 0);
 		// fprintf(stderr, "i[%d]をまちました\n", i);
 		if (WIFEXITED(status))
-			exit_status = WEXITSTATUS(status);
+		exit_status = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
-			exit_status = 128 + WTERMSIG(status);
+		exit_status = 128 + WTERMSIG(status);
 	}
+	else
+		waitpid(pid_1, &status, 0);
 	return (exit_status);
 }
 

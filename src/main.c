@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/11 16:00:54 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/12 13:58:48 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	pipex(char ***cmds, char **envp, int *pipe_fd, int fd_out, int cmd_num, int	
 	int		status;
 	int		exit_status;
 
-	fprintf(stderr, "i = %d cmd_num = %d\n", i, cmd_num);
+	// fprintf(stderr, "i = %d cmd_num = %d\n", i, cmd_num);
 	// fprintf(stderr, "最初　pipe_fd[0] = %d, pipe_fd[1] = %d, fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
 	if (i > cmd_num - 1)
 		return (0);
@@ -40,18 +40,18 @@ int	pipex(char ***cmds, char **envp, int *pipe_fd, int fd_out, int cmd_num, int	
 		// fprintf(stderr, "最後　pipe_fd[0] = %d, pipe_fd[1] = %d, fd_out = %d\n", pipe_fd[0], pipe_fd[1], fd_out);
 		// fprintf(stderr, "%d回目　cmd = %s\n", i, cmds[i][0]);
 		if (i == 0)
-			first_cmd(cmds[i], envp, i);
+			first_cmd(cmds[i], envp, pipe_fd, i);
 		else if (i == cmd_num - 1)
-			last_cmd(cmds[i], envp, i);
+			last_cmd(cmds[i], envp, pipe_fd, i);
 		else
-			middle_cmd(cmds[i], envp, i);
+			middle_cmd(cmds[i], envp, pipe_fd, i);
 		exit(0);
 	}
 	exit_status = pipex(cmds, envp, pipe_fd, fd_out, cmd_num, i + 1);
 	waitpid(pid_1, &status, 0);
 	if (i == cmd_num - 1)
 	{
-		fprintf(stderr, "i[%d] pid_1 = %d\n", i, pid_1);
+		// fprintf(stderr, "i[%d] pid_1 = %d\n", i, pid_1);
 		waitpid(pid_1, &status, 0);
 		// fprintf(stderr, "i[%d]をまちました\n", i);
 		if (WIFEXITED(status))
@@ -72,19 +72,19 @@ int	main(int argc, char *argv[], char **envp)
 
 	cmds = fill_cmds(argc, argv, envp);
 	i = 0;
-	int	j;
-	while (i < argc - 1)
-	{
-		printf("cmds[%d]= ", i);
-		j = 0;
-		while (cmds[i][j] != NULL)
-		{
-			printf("\"%s\" ",cmds[i][j]);
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
+	// int	j;
+	// while (i < argc - 1)
+	// {
+	// 	printf("cmds[%d]= ", i);
+	// 	j = 0;
+	// 	while (cmds[i][j] != NULL)
+	// 	{
+	// 		printf("\"%s\" ",cmds[i][j]);
+	// 		j++;
+	// 	}
+	// 	printf("\n");
+	// 	i++;
+	// }
 
 	fd_out = dup(STDOUT_FILENO);
 	exit_status = 0;

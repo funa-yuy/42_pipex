@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/10 22:41:50 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/12 13:59:30 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@
 int		pipex(char ***cmds, char **envp, int *pipe_fd, int fd_out, int cmd_num, int	i);
 
 /* child_process */
-void	first_cmd(char **cmd, char **envp, int i);
-void	middle_cmd(char **cmd, char **envp, int i);
-void	last_cmd(char **cmd, char **envp, int i);
+void	first_cmd(char **cmd, char **envp, int *pipe_fd, int i);
+void	middle_cmd(char **cmd, char **envp, int *pipe_fd, int i);
+void	last_cmd(char **cmd, char **envp, int *pipe_fd, int i);
 
 /* fill cmds */
 char	***fill_cmds(int argc, char *argv[], char **envp);

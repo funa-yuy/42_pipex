@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fill_cmds.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 21:06:49 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/10 21:50:11 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/13 16:57:13 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,11 @@ char	***fill_cmds(int argc, char *argv[], char **envp)
 			free_triple_pointer(cmds);
 			error("get_cmd_path");
 		}
-		free(cmds[i][0]);
-		cmds[i][0] = tmp;
+		if (tmp != cmds[i][0])
+		{
+			free(cmds[i][0]);
+			cmds[i][0] = tmp;
+		}
 		i++;
 	}
 	return (cmds);

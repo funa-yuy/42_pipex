@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_cmd_path.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:38:03 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/10 21:46:30 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/13 16:55:31 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,9 @@ char	*get_cmd_path(char *argv, char **envp)
 	if (!argv || !envp)
 		return (NULL);
 	if (access(argv, X_OK) == 0)
+	{
 		return (argv);
+	}
 	path = ft_getenv("PATH", envp);
 	if (!path)
 		error("not found ft_getenv");

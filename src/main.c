@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/13 16:39:49 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/13 16:59:00 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 void execute_cmd(char **cmds, char **envp, int input_fd, int	*current_pipe, int i, int cmd_num)
 {
 	int	outfile_fd;
-	// fprintf(stderr, "i = %d  input_fd = %d\n", i,  input_fd);
+	// fprintf(stderr, "i = %d  cmds[0] = %s\n", i, cmds[0]);
 	// 子プロセスで処理
 
 	if (i == 0)
@@ -110,10 +110,9 @@ int	main(int argc, char *argv[], char **envp)
 	int		i;
 	int		exit_status;
 	int		pipe_fd[2];
-	int		fd_out;
 
 	cmds = fill_cmds(argc, argv, envp);
-	i = 0;
+	// i = 0;
 	// int	j;
 	// while (i < argc - 1)
 	// {
@@ -128,9 +127,7 @@ int	main(int argc, char *argv[], char **envp)
 	// 	i++;
 	// }
 
-	fd_out = dup(STDOUT_FILENO);
 	exit_status = 0;
-	// exit_status = pipex(cmds, envp, pipe_fd, fd_out, argc - 1, 0);
 	exit_status = pipex(cmds, envp, argc - 1);
 	printf("exit_status = %d\n", exit_status);
 	free_triple_pointer(cmds);

@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/13 16:34:27 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/13 16:39:49 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void execute_cmd(char **cmds, char **envp, int input_fd, int	*current_pipe, int 
 
 	if (i == cmd_num - 1)
 	{
-		outfile_fd = open(OUT_FILE, O_CREAT | O_RDWR, 0644);
+		outfile_fd = open(OUT_FILE, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 		if (outfile_fd == -1)
 			error(NULL);
 		dup2(outfile_fd, STDOUT_FILENO);

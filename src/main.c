@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/13 16:59:00 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/13 17:34:02 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 // ./a.out "ls " → ×
 
 
-void execute_cmd(char **cmds, char **envp, int input_fd, int	*current_pipe, int i, int cmd_num)
+void execute_cmd(char **cmds, char **envp, int input_fd, int *current_pipe, char *argv[], int i, int cmd_num)
 {
 	int	outfile_fd;
 	// fprintf(stderr, "i = %d  cmds[0] = %s\n", i, cmds[0]);
@@ -28,7 +28,7 @@ void execute_cmd(char **cmds, char **envp, int input_fd, int	*current_pipe, int 
 
 	if (i == 0)
 	{
-		input_fd = open(IN_FILE, O_RDWR);
+		input_fd = open(argv[1], O_RDWR);
 		if (input_fd == -1)
 			error(NULL);
 	}
@@ -44,7 +44,7 @@ void execute_cmd(char **cmds, char **envp, int input_fd, int	*current_pipe, int 
 
 	if (i == cmd_num - 1)
 	{
-		outfile_fd = open(OUT_FILE, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		outfile_fd = open(argv[cmd_num + 2], O_WRONLY | O_TRUNC | O_CREAT, 0644);
 		if (outfile_fd == -1)
 			error(NULL);
 		dup2(outfile_fd, STDOUT_FILENO);
@@ -55,7 +55,10 @@ void execute_cmd(char **cmds, char **envp, int input_fd, int	*current_pipe, int 
 	exit(1);
 }
 
-int	pipex(char ***cmds, char **envp, int cmd_num)
+//パイプ下準備→パイプの生成
+//子プロセス作成→実行
+//パイプの後処理
+int	pipex(char ***cmds, char **envp, char *argv[], int cmd_num)
 {
 	int	pipe_fd1[2];
 	int	pipe_fd2[2];
@@ -70,7 +73,6 @@ int	pipex(char ***cmds, char **envp, int cmd_num)
 	i = 0;
 	while (i < cmd_num)
 	{
-
 		// パイプの切り替え
 		if (i % 2 == 0)
 		{
@@ -89,7 +91,7 @@ int	pipex(char ***cmds, char **envp, int cmd_num)
 
 		pid = fork();
 		if (pid == 0)
-			execute_cmd(cmds[i], envp, input_fd, current_pipe, i, cmd_num);
+			execute_cmd(cmds[i], envp, input_fd, current_pipe, argv, i, cmd_num);
 
 		if (i != 0)
 			close(input_fd);  // 使い終わったパイプの読み取り側を閉じる
@@ -103,7 +105,7 @@ int	pipex(char ***cmds, char **envp, int cmd_num)
 	return (0);
 }
 
-
+// ./pipex infile "ls -l" "wc -l" outfile
 int	main(int argc, char *argv[], char **envp)
 {
 	char	***cmds;
@@ -111,10 +113,13 @@ int	main(int argc, char *argv[], char **envp)
 	int		exit_status;
 	int		pipe_fd[2];
 
-	cmds = fill_cmds(argc, argv, envp);
+	int	cmd_num;
+
+	cmd_num = argc - 3;
+	cmds = fill_cmds(cmd_num, argv, envp);
 	// i = 0;
 	// int	j;
-	// while (i < argc - 1)
+	// while (i < cmd_num)
 	// {
 	// 	printf("cmds[%d]= ", i);
 	// 	j = 0;
@@ -128,7 +133,7 @@ int	main(int argc, char *argv[], char **envp)
 	// }
 
 	exit_status = 0;
-	exit_status = pipex(cmds, envp, argc - 1);
+	exit_status = pipex(cmds, envp, argv, cmd_num);
 	printf("exit_status = %d\n", exit_status);
 	free_triple_pointer(cmds);
 

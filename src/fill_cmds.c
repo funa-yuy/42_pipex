@@ -6,26 +6,26 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 21:06:49 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/13 16:57:13 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/13 17:23:51 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-char	***fill_cmds(int argc, char *argv[], char **envp)
+char	***fill_cmds(int cmd_num, char *argv[], char **envp)
 {
 	char	***cmds;
 	char	*tmp;
 	int		i;
 
-	cmds = (char ***)malloc(sizeof(char **) * argc);
+	cmds = (char ***)malloc(sizeof(char **) * (cmd_num + 1));
 	if (!cmds)
 		error("malloc");
-	cmds[argc -1] = NULL;
+	cmds[cmd_num] = NULL;
 	i = 0;
-	while (i < argc - 1)
+	while (i < cmd_num)
 	{
-		cmds[i] = ft_split(argv[i + 1], ' ');
+		cmds[i] = ft_split(argv[i + 2], ' ');
 		if (!cmds)
 		{
 			free_triple_pointer(cmds);

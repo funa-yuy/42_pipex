@@ -1,9 +1,10 @@
 a.out
+a.out.dSYM
 admin_proc.sh
 fd_memo.md
 include
+infile
 libft
-out
 outfile
 src
 test

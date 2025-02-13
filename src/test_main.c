@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/12 19:33:34 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/13 16:11:01 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,19 +113,34 @@ int	main(int argc, char *argv[], char **envp)
 
 void execute_cmd(char **cmds, char **envp, int input_fd, int	*current_pipe, int i, int cmd_num)
 {
+	int	outfile_fd;
+	// fprintf(stderr, "i = %d  input_fd = %d\n", i,  input_fd);
 	// 子プロセスで処理
-	if (i != 0) {
-		// 前回のパイプを標準入力に設定
-		dup2(input_fd, STDIN_FILENO);
-		close(input_fd);
+
+	if (i == 0)
+	{
+		input_fd = open(IN_FILE, O_RDWR);
+		if (input_fd == -1)
+			error(NULL);
 	}
+	dup2(input_fd, STDIN_FILENO);
+	close(input_fd);
+
 	if (i != cmd_num - 1) {
 		// 次のパイプの書き込みを標準出力に設定
 		dup2(current_pipe[1], STDOUT_FILENO);
 		close(current_pipe[1]);
 		close(current_pipe[0]);
 	}
-	fprintf(stderr, "i = %d  cmd_num - 1 = %d\n", i,  cmd_num - 1);
+
+	if (i == cmd_num - 1)
+	{
+		outfile_fd = open(OUT_FILE, O_CREAT | O_RDWR, 0644);
+		if (outfile_fd == -1)
+			error(NULL);
+		dup2(outfile_fd, STDOUT_FILENO);
+		close(outfile_fd);
+	}
 	execve(cmds[0], cmds, envp);
 	perror("execve failed");
 	exit(1);
@@ -140,13 +155,12 @@ int	pipex(char ***cmds, char **envp, int cmd_num)
 	int	*previous_pipe;
 	int	i;
 	pid_t pid;
+	int	infile_fd;
 
 	input_fd = STDIN_FILENO;
 	i = 0;
 	while (i < cmd_num)
 	{
-		fprintf(stderr, "%d回目:　pipe_fd1[0] = %d, pipe_fd1[1] = %d\n", i, pipe_fd1[0], pipe_fd1[1]);
-		fprintf(stderr, "pipe_fd2[0] = %d, pipe_fd2[1] = %d\n", pipe_fd2[0], pipe_fd2[1]);
 
 		// パイプの切り替え
 		if (i % 2 == 0)
@@ -166,22 +180,16 @@ int	pipex(char ***cmds, char **envp, int cmd_num)
 
 		pid = fork();
 		if (pid == 0)
-		{
 			execute_cmd(cmds[i], envp, input_fd, current_pipe, i, cmd_num);
-		}
-		else
-		{
-			// 親プロセス
-			if (i != 0)
-				close(input_fd);  // 使い終わったパイプの読み取り側を閉じる
 
-			if (i != cmd_num - 1)
-				close(current_pipe[1]);  // パイプの書き込み側を閉じる (EOF を送る)
-			input_fd = current_pipe[0];  // 次のコマンド用にパイプの読み取り側を設定
-		}
+		if (i != 0)
+			close(input_fd);  // 使い終わったパイプの読み取り側を閉じる
+		if (i != cmd_num - 1)
+			close(current_pipe[1]);  // パイプの書き込み側を閉じる (EOF を送る)
+
+		input_fd = current_pipe[0];  // 次のコマンド用にパイプの読み取り側を設定
 		i++;
 	}
 	while (wait(NULL) > 0);
-
 	return (0);
 }

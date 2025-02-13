@@ -70,8 +70,9 @@
 		dup2();→STDOUTをpipe_fd[1]に
 		close();→pipe_fd[1]をclose
 
-		子：pipe_fd[0]
+		子：pipe_fd[0]→close
 		親：pipe_fd[0]
+
 	- middle_cmd
 		dup2();→STDINをpipe_fd[0]に
 		close();→pipe_fd[0]をclose
@@ -79,7 +80,8 @@
 		dup2();→STDOUTをpipe_fd[1]に
 		close();→pipe_fd[1]をclose
 
-		子：pipe_fd[0]
+		子：pipe_fd[0]→close
+		親：pipe_fd[0]、
 	- last_cmd
 		dup2();→STDINをpipe_fd[0]に
 		close();→pipe_fd[0]をclose

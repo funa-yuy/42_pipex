@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/12 18:13:22 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/13 14:04:16 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 
 /* define */
 # define OUT_FILE	"./outfile"
-# define IN_FILE	"infile"
+# define IN_FILE	"./infile"
 
 /* pipex */
 // int		pipex(char ***cmds, char **envp, int *pipe_fd, int fd_out, int cmd_num, int	i);

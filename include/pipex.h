@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/14 16:23:32 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/14 18:58:46 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ char	*search_cmd_path(char *argv, char **dirs);
 char	*get_cmd_path(char *argv, char **envp);
 
 /* setup fd & pipe */
-void	setup_fd(int	*current_pipe, int	*previous_pipe, int	pipe_fd1[2], int pipe_fd2[2], int i);
+void	switch_pipefd(int	**current_pipe, int	**previous_pipe, int	pipe_fd1[2], int pipe_fd2[2], int i);
 
 /* utils */
 void	free_double_pointer(char **str);

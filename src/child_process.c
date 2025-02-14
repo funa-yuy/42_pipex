@@ -1,79 +1,50 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test_child_process.c                               :+:      :+:    :+:   */
+/*   child_process.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 20:13:06 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/12 18:10:55 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/14 20:51:51 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	last_cmd(char **cmd, char **envp, int *pipe_fd, int i)
+void	child_process(t_pipex data, int input_fd, int *current_pipe, int i)
 {
-	//pipe_fd[1]は使わないのでclose
-	if (close(pipe_fd[1]) == -1)
-		error("close[1]");
-	//
+	int	outfile_fd;
 
+	if (i == 0)
+	{
+		input_fd = open(data.infile, O_RDWR);
+		if (input_fd == -1)
+			error(NULL);
+	}
+	dup2(input_fd, STDIN_FILENO);
+	close(input_fd);
 
-	//pipe_fd[0]をSTDIN_FILENOにする
-	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
-		error("dup");
-	if (close(pipe_fd[0]) == -1)
-		error("close[0]");
-	//
+	if (i != data.cmd_num - 1) {
+		// 次のパイプの書き込みを標準出力に設定
+		dup2(current_pipe[1], STDOUT_FILENO);
+		close(current_pipe[1]);
+		close(current_pipe[0]);
+	}
 
-	// fprintf(stderr, "last_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, cmd[0]);
-	execve(cmd[0], cmd, envp);
-	error("last_cmd");
+	if (i == data.cmd_num - 1)
+	{
+		outfile_fd = open(data.outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		if (outfile_fd == -1)
+			error(NULL);
+		dup2(outfile_fd, STDOUT_FILENO);
+		close(outfile_fd);
+	}
 }
 
-void	first_cmd(char **cmd, char **envp, int *pipe_fd, int i)
+void	execute_cmd(char **cmds, char **envp)
 {
-	//pipe_fd[0]は使わないのでclose
-	if (close(pipe_fd[0]) == -1)
-		error("close[0]");
-	//
-
-
-	//pipe_fd[1]をSTDOUT_FILENOにする
-	if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
-		error("dup");
-	if (close(pipe_fd[1]) == -1)
-		error("close[1]");
-	//
-
-
-	// fprintf(stderr, "first_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, cmd[0]);
-	execve(cmd[0], cmd, envp);
-	error("first_cmd");
-}
-
-void	middle_cmd(char **cmd, char **envp, int *pipe_fd, int i)
-{
-
-	//pipe_fd[0]をSTDIN_FILENOにする
-	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
-		error("dup");
-	if (close(pipe_fd[0]) == -1)
-		error("close[0]");
-	//
-
-	//pipe_fd[1]をSTDOUT_FILENOにする
-	if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
-		error("dup");
-	if (close(pipe_fd[1]) == -1)
-		error("close[1]");
-	//
-
-
-	if (close(pipe_fd[0]) == -1)
-		error("close[0]");
-	// fprintf(stderr, "middle_cmd関数:fork[%d]の子供です。実行コマンドは→%s\n", i, cmd[0]);
-	execve(cmd[0], cmd, envp);
-	error("middle_cmd");
+	execve(cmds[0], cmds, envp);
+	perror("execve failed");
+	exit(126);
 }

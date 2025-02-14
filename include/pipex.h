@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/14 18:58:46 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/14 20:52:24 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,20 @@
 # define OUT_FILE	"./outfile"
 # define IN_FILE	"./infile"
 
-/* pipex */
-int	pipex(char ***cmds, char **envp, char *argv[], int cmd_num);
+typedef struct		s_pipex
+{
+	char	*infile;
+	char	*outfile;
+	int		pipe_fd1[2];
+	int		pipe_fd2[2];
+	int		*current_pipe;
+	int		*previous_pipe;
+	int		cmd_num;
+}			t_pipex;
 
+/* pipex */
+// int	pipex(char ***cmds, char **envp, char *argv[], int cmd_num);
+int	pipex(char ***cmds, char **envp, char *argv[], int cmd_num);
 
 /* child_process */
 void	first_cmd(char **cmd, char **envp, int *pipe_fd, int i);
@@ -41,7 +52,8 @@ void	middle_cmd(char **cmd, char **envp, int *pipe_fd, int i);
 void	last_cmd(char **cmd, char **envp, int *pipe_fd, int i);
 
 /* fill cmds */
-char	***fill_cmds(int argc, char *argv[], char **envp);
+// char	***fill_cmds(int argc, char *argv[], char **envp);
+char	***fill_cmds(t_pipex data, char *argv[], char **envp);
 
 /* get_cmd_path */
 char	*ft_getenv(const char *varname, char **envp);

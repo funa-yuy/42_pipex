@@ -6,25 +6,16 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/13 17:34:02 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/14 16:25:16 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 #include "../libft/libft.h"
-#include <sys/types.h>
 
-// ./a.out ls　→ ○
-// ./a.out "ls" → ○
-// ./a.out /bin/ls → ○
-// ./a.out "ls " → ×
-
-
-void execute_cmd(char **cmds, char **envp, int input_fd, int *current_pipe, char *argv[], int i, int cmd_num)
+void	execute_cmd(int input_fd, int *current_pipe, char *argv[], int i, int cmd_num)
 {
 	int	outfile_fd;
-	// fprintf(stderr, "i = %d  cmds[0] = %s\n", i, cmds[0]);
-	// 子プロセスで処理
 
 	if (i == 0)
 	{
@@ -50,11 +41,28 @@ void execute_cmd(char **cmds, char **envp, int input_fd, int *current_pipe, char
 		dup2(outfile_fd, STDOUT_FILENO);
 		close(outfile_fd);
 	}
+}
+
+void	child_process(char **cmds, char **envp)
+{
 	execve(cmds[0], cmds, envp);
 	perror("execve failed");
 	exit(1);
 }
 
+void	setup_fd(int	*current_pipe, int	*previous_pipe, int	pipe_fd1[2], int pipe_fd2[2], int i)
+{
+	if (i % 2 == 0)
+	{
+		current_pipe = pipe_fd1;
+		previous_pipe = pipe_fd2;
+	}
+	else
+	{
+		current_pipe = pipe_fd2;
+		previous_pipe = pipe_fd1;
+	}
+}
 //パイプ下準備→パイプの生成
 //子プロセス作成→実行
 //パイプの後処理
@@ -84,14 +92,17 @@ int	pipex(char ***cmds, char **envp, char *argv[], int cmd_num)
 			current_pipe = pipe_fd2;
 			previous_pipe = pipe_fd1;
 		}
-
+		// setup_fd(current_pipe, previous_pipe, pipe_fd1, pipe_fd2, i);
 		// 次のコマンドがある場合、パイプを作成
 		if (i !=  cmd_num - 1)
 			pipe(current_pipe);
 
 		pid = fork();
 		if (pid == 0)
-			execute_cmd(cmds[i], envp, input_fd, current_pipe, argv, i, cmd_num);
+		{
+			execute_cmd(input_fd, current_pipe, argv, i, cmd_num);
+			child_process(cmds[i], envp);
+		}
 
 		if (i != 0)
 			close(input_fd);  // 使い終わったパイプの読み取り側を閉じる

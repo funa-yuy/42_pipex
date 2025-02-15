@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   child_process.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 20:13:06 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/15 21:17:59 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/15 21:33:40 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,17 @@ void	child_process(t_pipex data, int input_fd, int *current_pipe, int i)
 	}
 }
 
+void	error_write_str_colon(char *str)
+{
+	write(2, str, ft_strlen(str));
+	write(2, ": ", 2);
+}
+
 void	error_cmd_not_found(char *cmd)
 {
 	char	*error_msg;
 
-	error_msg = ": command not found\n";
-	write(2, cmd, ft_strlen(cmd));
+	error_msg = "command not found\n";
 	write(2, error_msg, ft_strlen(error_msg));
 }
 
@@ -55,19 +60,17 @@ void	execute_cmd(char **cmds, char **envp)
 {
 	if (access(cmds[0], F_OK) == -1)
 	{
+		error_write_str_colon(cmds[0]);
 		if (ft_strchr (cmds[0], '/') == NULL)
 			error_cmd_not_found(cmds[0]);
 		else
-		{
-			write(2, cmds[0], ft_strlen(cmds[0]));
-			write(2, ": ", 2);
 			perror(NULL);
-		}
 		exit(127);
 	}
-	execve(cmds[0], cmds, envp);
-	write(2, cmds[0], ft_strlen(cmds[0]));
-	write(2, ": ", 2);
-	perror(NULL);
-	exit(126);
+	if (execve(cmds[0], cmds, envp) < 0)
+	{
+		error_write_str_colon(cmds[0]);
+		perror(NULL);
+		exit(126);
+	}
 }

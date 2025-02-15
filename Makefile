@@ -6,7 +6,7 @@
 #    By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/08 01:21:55 by miyuu             #+#    #+#              #
-#    Updated: 2025/02/14 20:51:57 by miyuu            ###   ########.fr        #
+#    Updated: 2025/02/15 18:09:57 by miyuu            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,8 @@ LIBFT_DIR = ./libft
 SRC_FILES = main.c \
 			fill_cmds.c \
 			get_cmd_path.c \
+			child_process.c \
+			setup_fd.c \
 			utils.c
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))

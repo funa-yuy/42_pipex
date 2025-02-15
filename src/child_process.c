@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 20:13:06 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/14 20:51:51 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/15 19:03:55 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,20 @@ void	child_process(t_pipex data, int input_fd, int *current_pipe, int i)
 	}
 }
 
+void	error_cmd_not_found(char *cmd)
+{
+	char	*error_msg;
+
+	error_msg = ": command not found\n";
+	write(2, cmd, ft_strlen(cmd));
+	write(2, error_msg, ft_strlen(error_msg));
+	exit(127);
+}
+
 void	execute_cmd(char **cmds, char **envp)
 {
 	execve(cmds[0], cmds, envp);
-	perror("execve failed");
+	if (errno == ENOENT)
+		error_cmd_not_found(cmds[0]);
 	exit(126);
 }

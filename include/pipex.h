@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/15 16:15:13 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/15 18:47:59 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include <sys/wait.h>
+
+#include <errno.h>//使っていいかは謎 errno
 
 /* define */
 # define OUT_FILE	"./outfile"
@@ -54,9 +56,8 @@ typedef struct		s_pipex
 int	pipex(t_pipex data, char ***cmds, char **envp);
 
 /* child_process */
-void	first_cmd(char **cmd, char **envp, int *pipe_fd, int i);
-void	middle_cmd(char **cmd, char **envp, int *pipe_fd, int i);
-void	last_cmd(char **cmd, char **envp, int *pipe_fd, int i);
+void	child_process(t_pipex data, int input_fd, int *current_pipe, int i);
+void	execute_cmd(char **cmds, char **envp);
 
 /* fill cmds */
 // char	***fill_cmds(int argc, char *argv[], char **envp);
@@ -68,8 +69,8 @@ char	*search_cmd_path(char *argv, char **dirs);
 char	*get_cmd_path(char *argv, char **envp);
 
 /* setup fd & pipe */
-// void	switch_pipefd(int	**current_pipe, int	**previous_pipe, int	pipe_fd1[2], int pipe_fd2[2], int i);
-// void	switch_pipefd(t_fd fd_data, int **current_pipe, int **previous_pipe, int pipe_fd1[2], int pipe_fd2[2], int i);
+void	switch_pipefd(t_fd *fd_data, int i);
+void	after_setup_fd(int *input_fd, int *current_pipe, int i, int cmd_num);
 
 
 /* utils */

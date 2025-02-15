@@ -6,23 +6,23 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 18:43:21 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/14 20:47:38 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/15 18:12:58 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	switch_pipefd(int **current_pipe, int	**previous_pipe, int pipe_fd1[2], int pipe_fd2[2], int i)
+void	switch_pipefd(t_fd *fd_data, int i)
 {
 	if (i % 2 == 0)
 	{
-		*current_pipe = pipe_fd1;
-		*previous_pipe = pipe_fd2;
+		fd_data->current_pipe = fd_data->pipe_fd1;
+		fd_data->previous_pipe = fd_data->pipe_fd2;
 	}
 	else
 	{
-		*current_pipe = pipe_fd2;
-		*previous_pipe = pipe_fd1;
+		fd_data->current_pipe = fd_data->pipe_fd2;
+		fd_data->previous_pipe = fd_data->pipe_fd1;
 	}
 }
 

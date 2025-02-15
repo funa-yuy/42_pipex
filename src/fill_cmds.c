@@ -6,24 +6,24 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 21:06:49 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/15 19:14:30 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/16 01:46:27 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-char	***fill_cmds(t_pipex data, char *argv[], char **envp)
+char	***fill_cmds(t_pipex *data, char *argv[], char **envp)
 {
 	char	***cmds;
 	char	*path;
 	int		i;
 
-	cmds = (char ***)malloc(sizeof(char **) * (data.cmd_num + 1));
+	cmds = (char ***)malloc(sizeof(char **) * (data->cmd_num + 1));
 	if (!cmds)
 		error(NULL);
-	cmds[data.cmd_num] = NULL;
+	cmds[data->cmd_num] = NULL;
 	i = 0;
-	while (i < data.cmd_num)
+	while (i < data->cmd_num)
 	{
 		cmds[i] = ft_split(argv[i + 2], ' ');
 		if (!cmds)

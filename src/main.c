@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/15 23:07:50 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/16 02:05:57 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	wait_status(pid_t last_pid)
 	return (last_status);
 }
 
-int	pipex(t_pipex data, char ***cmds, char **envp)
+int	pipex(t_pipex *data, char **envp)
 {
 	t_fd	fd_data;
 	int		input_fd;
@@ -36,15 +36,15 @@ int	pipex(t_pipex data, char ***cmds, char **envp)
 
 	fd_data.input_fd = STDIN_FILENO;
 	i = 0;
-	while (i < data.cmd_num)
+	while (i < data->cmd_num)
 	{
 		switch_pipefd(&fd_data, i);
-		if (i != data.cmd_num - 1)
+		if (i != data->cmd_num - 1)
 			pipe(fd_data.current_pipe);
 		pid = fork();
 		if (pid == 0)
-			child_process(&fd_data, data, cmds[i], envp, i);
-		after_exec_setup_fd(&fd_data, i, data.cmd_num);
+			child_process(&fd_data, data, envp, i);
+		after_exec_setup_fd(&fd_data, i, data->cmd_num);
 		i++;
 	}
 	return (wait_status(pid));
@@ -55,17 +55,15 @@ void	data_init(t_pipex *data, int argc, char *argv[], char **envp)
 	data->cmd_num = argc - 3;
 	data->infile = argv[1];
 	data->outfile = argv[argc - 1];
-	// data->cmds = fill_cmds(*data, argv, envp);
+	data->cmds = fill_cmds(data, argv, envp);
 }
 
 int	main(int argc, char *argv[], char **envp)
 {
-	char	***cmds;
 	int		exit_status;
 	t_pipex	data;
 
 	data_init(&data, argc, argv, envp);
-	cmds = fill_cmds(data, argv, envp);
 	// int		i;
 	// i = 0;
 	// int	j;
@@ -73,9 +71,9 @@ int	main(int argc, char *argv[], char **envp)
 	// {
 	// 	printf("cmds[%d]= ", i);
 	// 	j = 0;
-	// 	while (cmds[i][j] != NULL)
+	// 	while (data.cmds[i][j] != NULL)
 	// 	{
-	// 		printf("\"%s\" ",cmds[i][j]);
+	// 		printf("\"%s\" ",data.cmds[i][j]);
 	// 		j++;
 	// 	}
 	// 	printf("\n");
@@ -83,8 +81,8 @@ int	main(int argc, char *argv[], char **envp)
 	// }
 
 	exit_status = 0;
-	exit_status = pipex(data, cmds, envp);
-	free_triple_pointer(cmds);
+	exit_status = pipex(&data, envp);
+	free_triple_pointer(data.cmds);
 
 	return (exit_status);
 }

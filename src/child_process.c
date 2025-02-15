@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 20:13:06 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/15 19:06:24 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/15 21:17:59 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,25 @@ void	error_cmd_not_found(char *cmd)
 	error_msg = ": command not found\n";
 	write(2, cmd, ft_strlen(cmd));
 	write(2, error_msg, ft_strlen(error_msg));
-	exit(127);
 }
 
 void	execute_cmd(char **cmds, char **envp)
 {
+	if (access(cmds[0], F_OK) == -1)
+	{
+		if (ft_strchr (cmds[0], '/') == NULL)
+			error_cmd_not_found(cmds[0]);
+		else
+		{
+			write(2, cmds[0], ft_strlen(cmds[0]));
+			write(2, ": ", 2);
+			perror(NULL);
+		}
+		exit(127);
+	}
 	execve(cmds[0], cmds, envp);
-	if (errno == ENOENT)
-		error_cmd_not_found(cmds[0]);
+	write(2, cmds[0], ft_strlen(cmds[0]));
+	write(2, ": ", 2);
+	perror(NULL);
 	exit(126);
 }

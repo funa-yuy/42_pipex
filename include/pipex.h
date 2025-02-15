@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/15 18:47:59 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/15 20:18:45 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include <sys/wait.h>
+# include <stdbool.h>
 
 #include <errno.h>//使っていいかは謎 errno
 

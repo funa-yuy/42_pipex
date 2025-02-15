@@ -1,10 +1,11 @@
-Makefile
-admin_proc.sh
-fd_memo.md
-include
-infile
-libft
-outfile
-pipex
-src
-test
+total 112
+-rw-r--r--   1 miyuu  staff   1511 Feb 14 20:51 Makefile
+-rwxr-xr-x@  1 miyuu  staff   2090 Feb 12 11:44 admin_proc.sh
+-rw-r--r--@  1 miyuu  staff   4521 Feb 13 13:10 fd_memo.md
+drwxr-xr-x   4 miyuu  staff    128 Feb 14 20:10 include
+-rw-r--r--@  1 miyuu  staff     19 Feb 14 13:12 infile
+drwxr-xr-x@ 85 miyuu  staff   2720 Feb 15 02:02 libft
+-rw-r--r--@  1 miyuu  staff      0 Feb 15 02:02 outfile
+-rwxr-xr-x@  1 miyuu  staff  35128 Feb 15 02:02 pipex
+drwxr-xr-x  12 miyuu  staff    384 Feb 15 02:02 src
+drwxr-xr-x@ 16 miyuu  staff    512 Feb 14 13:04 test

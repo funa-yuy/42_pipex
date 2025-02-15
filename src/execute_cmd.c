@@ -1,22 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   child_process.c                                    :+:      :+:    :+:   */
+/*   execute_cmd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/07 20:13:06 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/15 22:42:30 by mfunakos         ###   ########.fr       */
+/*   Created: 2025/02/15 22:39:32 by mfunakos          #+#    #+#             */
+/*   Updated: 2025/02/15 22:56:20 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	child_process(t_fd *fd_data, t_pipex data, char **cmd, char **envp, int i)
+void	error_cmd_not_found(char *cmd)
 {
-	int	outfile_fd;
+	char	*error_msg;
 
-	setup_input_fd(data, fd_data->input_fd, fd_data->current_pipe, i);
-	setup_output_fd(data, fd_data->current_pipe, i);
-	execute_cmd(cmd, envp);
+	error_msg = ": command not found\n";
+	write(2, cmd, ft_strlen(cmd));
+	write(2, error_msg, ft_strlen(error_msg));
+}
+
+void	execute_cmd(char **cmd, char **envp)
+{
+	if (access(cmd[0], F_OK) == -1)
+	{
+		if (ft_strchr (cmd[0], '/') == NULL)
+			error_cmd_not_found(cmd[0]);
+		else
+			perror(cmd[0]);
+		exit(127);
+	}
+	if (execve(cmd[0], cmd, envp) < 0)
+	{
+		perror(cmd[0]);
+		exit(126);
+	}
 }

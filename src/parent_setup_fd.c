@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   setup_fd.c                                         :+:      :+:    :+:   */
+/*   parent_setup_fd.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 18:43:21 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/15 22:12:59 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/15 22:38:13 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,11 @@ void	switch_pipefd(t_fd *fd_data, int i)
 	}
 }
 
-void	after_setup_fd(t_fd *fd_data, int i, int cmd_num)
+void	after_exec_setup_fd(t_fd *fd_data, int i, int cmd_num)
 {
 	if (i != 0)
-		close(fd_data->input_fd);  // 使い終わったパイプの読み取り側を閉じる
+		close(fd_data->input_fd);
 	if (i != cmd_num - 1)
-		close(fd_data->current_pipe[1]);  // パイプの書き込み側を閉じる (EOF を送る)
-
-	fd_data->input_fd = fd_data->current_pipe[0];  // 次のコマンド用にパイプの読み取り側を設定
+		close(fd_data->current_pipe[1]);
+	fd_data->input_fd = fd_data->current_pipe[0];
 }

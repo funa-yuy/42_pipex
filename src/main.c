@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/15 22:14:22 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/15 22:52:47 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,19 +39,12 @@ int	pipex(t_pipex data, char ***cmds, char **envp)
 	while (i < data.cmd_num)
 	{
 		switch_pipefd(&fd_data, i);
-
 		if (i != data.cmd_num - 1)
 			pipe(fd_data.current_pipe);
-
 		pid = fork();
 		if (pid == 0)
-		{
 			child_process(&fd_data, data, cmds[i], envp, i);
-			// child_process(data, cmds[i], envp, input_fd, fd_data.current_pipe, i);
-			// execute_cmd(cmds[i], envp);
-		}
-		// after_setup_fd(&input_fd, fd_data.current_pipe, i, data.cmd_num);
-		after_setup_fd(&fd_data, i, data.cmd_num);
+		after_exec_setup_fd(&fd_data, i, data.cmd_num);
 		i++;
 	}
 	return (wait_status(pid));
@@ -90,7 +83,6 @@ int	main(int argc, char *argv[], char **envp)
 
 	exit_status = 0;
 	exit_status = pipex(data, cmds, envp);
-	// printf("exit_status = %d\n", exit_status);
 	free_triple_pointer(cmds);
 
 	return (exit_status);

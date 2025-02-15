@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/15 22:52:47 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/15 23:07:50 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,12 @@ int	pipex(t_pipex data, char ***cmds, char **envp)
 	return (wait_status(pid));
 }
 
-void	data_init(t_pipex *data, int argc, char *argv[])
+void	data_init(t_pipex *data, int argc, char *argv[], char **envp)
 {
 	data->cmd_num = argc - 3;
 	data->infile = argv[1];
 	data->outfile = argv[argc - 1];
+	// data->cmds = fill_cmds(*data, argv, envp);
 }
 
 int	main(int argc, char *argv[], char **envp)
@@ -63,7 +64,7 @@ int	main(int argc, char *argv[], char **envp)
 	int		exit_status;
 	t_pipex	data;
 
-	data_init(&data, argc, argv);
+	data_init(&data, argc, argv, envp);
 	cmds = fill_cmds(data, argv, envp);
 	// int		i;
 	// i = 0;

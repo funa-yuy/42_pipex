@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/15 22:56:28 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/15 23:08:08 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@ typedef struct s_pipex
 	char	*infile;
 	char	*outfile;
 }			t_pipex;
+
+/* init data */
+void	data_init(t_pipex *data, int argc, char *argv[], char **envp);
 
 /* pipex */
 int		pipex(t_pipex data, char ***cmds, char **envp);

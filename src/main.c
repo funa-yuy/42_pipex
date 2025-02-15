@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/15 16:05:25 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:16:25 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,13 @@ void	switch_pipefd(t_fd *fd_data, int **current_pipe, int **previous_pipe, int i
 {
 	if (i % 2 == 0)
 	{
-		*current_pipe = fd_data->pipe_fd1;
-		*previous_pipe = fd_data->pipe_fd2;
+		fd_data->current_pipe = fd_data->pipe_fd1;
+		fd_data->previous_pipe = fd_data->pipe_fd2;
 	}
 	else
 	{
-		*current_pipe = fd_data->pipe_fd2;
-		*previous_pipe = fd_data->pipe_fd1;
+		fd_data->current_pipe = fd_data->pipe_fd2;
+		fd_data->previous_pipe = fd_data->pipe_fd1;
 	}
 }
 
@@ -94,8 +94,8 @@ int	wait_status(pid_t last_pid)
 int	pipex(t_pipex data, char ***cmds, char **envp)
 {
 	t_fd	fd_data;
-	int	pipe_fd1[2];
-	int	pipe_fd2[2];
+	// int	pipe_fd1[2];
+	// int	pipe_fd2[2];
 	int	input_fd;
 	int	*current_pipe;
 	int	*previous_pipe;
@@ -110,18 +110,17 @@ int	pipex(t_pipex data, char ***cmds, char **envp)
 		// パイプの切り替え
 		switch_pipefd(&fd_data, &current_pipe, &previous_pipe, i);
 
-		// printf("current_pipe[0] = %d current_pipe[1] = %d\n", current_pipe[0], current_pipe[1]);
 		if (i !=  data.cmd_num - 1)
-			pipe(current_pipe);
+			pipe(fd_data.current_pipe);
 
 		pid = fork();
 		last_pid = pid;
 		if (pid == 0)
 		{
-			execute_cmd(data, input_fd, current_pipe, i);
+			execute_cmd(data, input_fd, fd_data.current_pipe, i);
 			child_process(cmds[i], envp);
 		}
-		after_setup_fd(&input_fd, current_pipe, i, data.cmd_num);
+		after_setup_fd(&input_fd, fd_data.current_pipe, i, data.cmd_num);
 		i++;
 	}
 	return (wait_status(last_pid));

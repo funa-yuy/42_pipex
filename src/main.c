@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/15 13:53:37 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:05:25 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,17 +50,17 @@ void	child_process(char **cmds, char **envp)
 	exit(126);
 }
 
-void	switch_pipefd(int **current_pipe, int **previous_pipe, int pipe_fd1[2], int pipe_fd2[2], int i)
+void	switch_pipefd(t_fd *fd_data, int **current_pipe, int **previous_pipe, int i)
 {
 	if (i % 2 == 0)
 	{
-		*current_pipe = pipe_fd1;
-		*previous_pipe = pipe_fd2;
+		*current_pipe = fd_data->pipe_fd1;
+		*previous_pipe = fd_data->pipe_fd2;
 	}
 	else
 	{
-		*current_pipe = pipe_fd2;
-		*previous_pipe = pipe_fd1;
+		*current_pipe = fd_data->pipe_fd2;
+		*previous_pipe = fd_data->pipe_fd1;
 	}
 }
 
@@ -93,6 +93,7 @@ int	wait_status(pid_t last_pid)
 //パイプの後処理
 int	pipex(t_pipex data, char ***cmds, char **envp)
 {
+	t_fd	fd_data;
 	int	pipe_fd1[2];
 	int	pipe_fd2[2];
 	int	input_fd;
@@ -107,7 +108,9 @@ int	pipex(t_pipex data, char ***cmds, char **envp)
 	while (i < data.cmd_num)
 	{
 		// パイプの切り替え
-		switch_pipefd(&current_pipe, &previous_pipe, pipe_fd1, pipe_fd2, i);
+		switch_pipefd(&fd_data, &current_pipe, &previous_pipe, i);
+
+		// printf("current_pipe[0] = %d current_pipe[1] = %d\n", current_pipe[0], current_pipe[1]);
 		if (i !=  data.cmd_num - 1)
 			pipe(current_pipe);
 
@@ -124,7 +127,6 @@ int	pipex(t_pipex data, char ***cmds, char **envp)
 	return (wait_status(last_pid));
 }
 
-// ./pipex infile "ls -l" "wc -l" outfile
 int	main(int argc, char *argv[], char **envp)
 {
 	char	***cmds;

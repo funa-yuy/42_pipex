@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/15 13:53:49 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:05:29 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ typedef struct		s_fd
 	int		input_fd;
 	int		pipe_fd1[2];
 	int		pipe_fd2[2];
-	int		*current_pipe;
-	int		*previous_pipe;
+	// int		*current_pipe;
+	// int		*previous_pipe;
 }			t_fd;
 
 
@@ -68,7 +68,9 @@ char	*search_cmd_path(char *argv, char **dirs);
 char	*get_cmd_path(char *argv, char **envp);
 
 /* setup fd & pipe */
-void	switch_pipefd(int	**current_pipe, int	**previous_pipe, int	pipe_fd1[2], int pipe_fd2[2], int i);
+// void	switch_pipefd(int	**current_pipe, int	**previous_pipe, int	pipe_fd1[2], int pipe_fd2[2], int i);
+// void	switch_pipefd(t_fd fd_data, int **current_pipe, int **previous_pipe, int pipe_fd1[2], int pipe_fd2[2], int i);
+
 
 /* utils */
 void	free_double_pointer(char **str);

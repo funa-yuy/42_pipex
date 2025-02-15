@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/14 20:52:57 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/15 13:48:35 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	child_process(char **cmds, char **envp)
 	exit(126);
 }
 
-void	switch_pipefd(int **current_pipe, int	**previous_pipe, int pipe_fd1[2], int pipe_fd2[2], int i)
+void	switch_pipefd(int **current_pipe, int **previous_pipe, int pipe_fd1[2], int pipe_fd2[2], int i)
 {
 	if (i % 2 == 0)
 	{
@@ -91,7 +91,7 @@ int	wait_status(pid_t last_pid)
 //パイプ下準備→パイプの生成
 //子プロセス作成→実行
 //パイプの後処理
-int	pipex(char ***cmds, char **envp, char *argv[], int cmd_num)
+int	pipex(t_pipex data, char ***cmds, char **envp, char *argv[])
 {
 	int	pipe_fd1[2];
 	int	pipe_fd2[2];
@@ -101,25 +101,24 @@ int	pipex(char ***cmds, char **envp, char *argv[], int cmd_num)
 	int	i;
 	pid_t	pid;
 	pid_t	last_pid;
-	int	infile_fd;
 
 	input_fd = STDIN_FILENO;
 	i = 0;
-	while (i < cmd_num)
+	while (i < data.cmd_num)
 	{
 		// パイプの切り替え
 		switch_pipefd(&current_pipe, &previous_pipe, pipe_fd1, pipe_fd2, i);
-		if (i !=  cmd_num - 1)
+		if (i !=  data.cmd_num - 1)
 			pipe(current_pipe);
 
 		pid = fork();
 		last_pid = pid;
 		if (pid == 0)
 		{
-			execute_cmd(input_fd, current_pipe, argv, i, cmd_num);
+			execute_cmd(input_fd, current_pipe, argv, i, data.cmd_num);
 			child_process(cmds[i], envp);
 		}
-		after_setup_fd(&input_fd, current_pipe, i, cmd_num);
+		after_setup_fd(&input_fd, current_pipe, i, data.cmd_num);
 		i++;
 	}
 	return (wait_status(last_pid));
@@ -139,25 +138,25 @@ int	main(int argc, char *argv[], char **envp)
 	data.outfile = argv[argc - 1];
 	cmd_num = argc - 3;
 	cmds = fill_cmds(data, argv, envp);
-	i = 0;
-	int	j;
-	while (i < data.cmd_num)
-	{
-		printf("cmds[%d]= ", i);
-		j = 0;
-		while (cmds[i][j] != NULL)
-		{
-			printf("\"%s\" ",cmds[i][j]);
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
-	printf("infile = %s\n", data.infile);
-	printf("outfile =%s\n", data.outfile);
+	// i = 0;
+	// int	j;
+	// while (i < data.cmd_num)
+	// {
+	// 	printf("cmds[%d]= ", i);
+	// 	j = 0;
+	// 	while (cmds[i][j] != NULL)
+	// 	{
+	// 		printf("\"%s\" ",cmds[i][j]);
+	// 		j++;
+	// 	}
+	// 	printf("\n");
+	// 	i++;
+	// }
+	// printf("infile = %s\n", data.infile);
+	// printf("outfile =%s\n", data.outfile);
 	exit_status = 0;
-	exit_status = pipex(cmds, envp, argv, cmd_num);
-	printf("exit_status = %d\n", exit_status);
+	exit_status = pipex(data, cmds, envp, argv);
+	// printf("exit_status = %d\n", exit_status);
 	free_triple_pointer(cmds);
 
 	return (exit_status);

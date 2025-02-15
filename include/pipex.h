@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/14 20:52:24 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/15 13:48:53 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,20 +31,27 @@
 # define OUT_FILE	"./outfile"
 # define IN_FILE	"./infile"
 
-typedef struct		s_pipex
+typedef struct		s_fd
 {
-	char	*infile;
-	char	*outfile;
+	int		input_fd;
 	int		pipe_fd1[2];
 	int		pipe_fd2[2];
 	int		*current_pipe;
 	int		*previous_pipe;
+}			t_fd;
+
+
+typedef struct		s_pipex
+{
 	int		cmd_num;
+	char	***cmds;
+	char	*infile;
+	char	*outfile;
 }			t_pipex;
 
 /* pipex */
 // int	pipex(char ***cmds, char **envp, char *argv[], int cmd_num);
-int	pipex(char ***cmds, char **envp, char *argv[], int cmd_num);
+int	pipex(t_pipex data, char ***cmds, char **envp, char *argv[]);
 
 /* child_process */
 void	first_cmd(char **cmd, char **envp, int *pipe_fd, int i);

@@ -6,7 +6,7 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/15 13:48:53 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/15 13:53:49 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ typedef struct		s_pipex
 
 /* pipex */
 // int	pipex(char ***cmds, char **envp, char *argv[], int cmd_num);
-int	pipex(t_pipex data, char ***cmds, char **envp, char *argv[]);
+int	pipex(t_pipex data, char ***cmds, char **envp);
 
 /* child_process */
 void	first_cmd(char **cmd, char **envp, int *pipe_fd, int i);

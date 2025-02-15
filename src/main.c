@@ -6,36 +6,36 @@
 /*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/15 13:48:35 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/15 13:53:37 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 #include "../libft/libft.h"
 
-void	execute_cmd(int input_fd, int *current_pipe, char *argv[], int i, int cmd_num)
+void	execute_cmd(t_pipex data, int input_fd, int *current_pipe, int i)
 {
 	int	outfile_fd;
 
 	if (i == 0)
 	{
-		input_fd = open(argv[1], O_RDWR);
+		input_fd = open(data.infile, O_RDWR);
 		if (input_fd == -1)
 			error(NULL);
 	}
 	dup2(input_fd, STDIN_FILENO);
 	close(input_fd);
 
-	if (i != cmd_num - 1) {
+	if (i != data.cmd_num - 1) {
 		// 次のパイプの書き込みを標準出力に設定
 		dup2(current_pipe[1], STDOUT_FILENO);
 		close(current_pipe[1]);
 		close(current_pipe[0]);
 	}
 
-	if (i == cmd_num - 1)
+	if (i == data.cmd_num - 1)
 	{
-		outfile_fd = open(argv[cmd_num + 2], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		outfile_fd = open(data.outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 		if (outfile_fd == -1)
 			error(NULL);
 		dup2(outfile_fd, STDOUT_FILENO);
@@ -91,7 +91,7 @@ int	wait_status(pid_t last_pid)
 //パイプ下準備→パイプの生成
 //子プロセス作成→実行
 //パイプの後処理
-int	pipex(t_pipex data, char ***cmds, char **envp, char *argv[])
+int	pipex(t_pipex data, char ***cmds, char **envp)
 {
 	int	pipe_fd1[2];
 	int	pipe_fd2[2];
@@ -115,7 +115,7 @@ int	pipex(t_pipex data, char ***cmds, char **envp, char *argv[])
 		last_pid = pid;
 		if (pid == 0)
 		{
-			execute_cmd(input_fd, current_pipe, argv, i, data.cmd_num);
+			execute_cmd(data, input_fd, current_pipe, i);
 			child_process(cmds[i], envp);
 		}
 		after_setup_fd(&input_fd, current_pipe, i, data.cmd_num);
@@ -155,7 +155,7 @@ int	main(int argc, char *argv[], char **envp)
 	// printf("infile = %s\n", data.infile);
 	// printf("outfile =%s\n", data.outfile);
 	exit_status = 0;
-	exit_status = pipex(data, cmds, envp, argv);
+	exit_status = pipex(data, cmds, envp);
 	// printf("exit_status = %d\n", exit_status);
 	free_triple_pointer(cmds);
 

@@ -1,3 +1,1 @@
- 13:47:44 up 10 days, 17:05,  1 user,  load average: 0.71, 0.46, 0.25
-USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
-mfunakos tty7     :0               12:42   10days 55.86s  0.15s /usr/sbin/ft-init hooks login-user env GNOME_SHELL_SESSION_MODE=ubuntu /usr/bin/gnome-session --systemd --session=ubuntu
+Sat Feb 15 13:56:17 JST 2025

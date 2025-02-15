@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/15 20:18:45 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/15 22:16:02 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ typedef struct		s_pipex
 int	pipex(t_pipex data, char ***cmds, char **envp);
 
 /* child_process */
-void	child_process(t_pipex data, int input_fd, int *current_pipe, int i);
+// void	child_process(t_pipex data, int input_fd, int *current_pipe, int i);
+void	child_process(t_fd *fd_data, t_pipex data, char **cmd, char **envp, int i);
 void	execute_cmd(char **cmds, char **envp);
 
 /* fill cmds */
@@ -71,7 +72,8 @@ char	*get_cmd_path(char *argv, char **envp);
 
 /* setup fd & pipe */
 void	switch_pipefd(t_fd *fd_data, int i);
-void	after_setup_fd(int *input_fd, int *current_pipe, int i, int cmd_num);
+// void	after_setup_fd(int *input_fd, int *current_pipe, int i, int cmd_num);
+void	after_setup_fd(t_fd *fd_data, int i, int cmd_num);
 
 
 /* utils */

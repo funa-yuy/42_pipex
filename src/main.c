@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/15 18:21:33 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/15 22:14:22 by mfunakos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	pipex(t_pipex data, char ***cmds, char **envp)
 	int		i;
 	pid_t	pid;
 
-	input_fd = STDIN_FILENO;
+	fd_data.input_fd = STDIN_FILENO;
 	i = 0;
 	while (i < data.cmd_num)
 	{
@@ -46,10 +46,12 @@ int	pipex(t_pipex data, char ***cmds, char **envp)
 		pid = fork();
 		if (pid == 0)
 		{
-			child_process(data, input_fd, fd_data.current_pipe, i);
-			execute_cmd(cmds[i], envp);
+			child_process(&fd_data, data, cmds[i], envp, i);
+			// child_process(data, cmds[i], envp, input_fd, fd_data.current_pipe, i);
+			// execute_cmd(cmds[i], envp);
 		}
-		after_setup_fd(&input_fd, fd_data.current_pipe, i, data.cmd_num);
+		// after_setup_fd(&input_fd, fd_data.current_pipe, i, data.cmd_num);
+		after_setup_fd(&fd_data, i, data.cmd_num);
 		i++;
 	}
 	return (wait_status(pid));

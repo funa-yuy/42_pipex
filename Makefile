@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+         #
+#    By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/08 01:21:55 by miyuu             #+#    #+#              #
-#    Updated: 2025/02/15 22:42:21 by mfunakos         ###   ########.fr        #
+#    Updated: 2025/02/16 22:53:02 by miyuu            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,7 @@ SRC_FILES = main.c \
 			execute_cmd.c \
 			child_setup_fd.c \
 			parent_setup_fd.c \
+			ft_getenv.c \
 			utils.c
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))

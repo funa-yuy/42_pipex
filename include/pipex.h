@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/16 02:05:48 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/16 22:53:45 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	setup_output_fd(t_pipex *data, int *current_pipe, int i);
 char	***fill_cmds(t_pipex *data, char *argv[], char **envp);
 
 /* get_cmd_path */
-char	*ft_getenv(const char *varname, char **envp);
+char	*ft_getenv(char *varname, char **envp);
 char	*search_cmd_path(char *argv, char **dirs);
 char	*get_cmd_path(char *argv, char **envp);
 

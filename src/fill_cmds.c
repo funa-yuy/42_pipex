@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 21:06:49 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/16 01:46:27 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/16 02:08:36 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,9 @@ char	***fill_cmds(t_pipex *data, char *argv[], char **envp)
 			free_triple_pointer(cmds);
 			error("ft_split");
 		}
-		path = NULL;
 		path = get_cmd_path(cmds[i][0], envp);
 		if (!path)
-		{
 			path = cmds[i][0];
-			// free_triple_pointer(cmds);
-			// error("get_cmd_path");
-		}
 		if (path != cmds[i][0])
 		{
 			free(cmds[i][0]);

@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/16 02:05:57 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/16 02:13:24 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ int	wait_status(pid_t last_pid)
 	int	last_status;
 
 	waitpid(last_pid, &last_status, 0);
-	while (wait(&status) > 0);
+	while (wait(&status) > 0)
+		;
 	if (WIFEXITED(last_status))
 		return (WEXITSTATUS(last_status));
 	else if (WIFSIGNALED(last_status))
@@ -64,6 +65,12 @@ int	main(int argc, char *argv[], char **envp)
 	t_pipex	data;
 
 	data_init(&data, argc, argv, envp);
+	exit_status = 0;
+	exit_status = pipex(&data, envp);
+	free_triple_pointer(data.cmds);
+	return (exit_status);
+}
+
 	// int		i;
 	// i = 0;
 	// int	j;
@@ -79,10 +86,3 @@ int	main(int argc, char *argv[], char **envp)
 	// 	printf("\n");
 	// 	i++;
 	// }
-
-	exit_status = 0;
-	exit_status = pipex(&data, envp);
-	free_triple_pointer(data.cmds);
-
-	return (exit_status);
-}

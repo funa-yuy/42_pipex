@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   execute_cmd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mfunakos <mfunakos@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 22:39:32 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/15 22:56:20 by mfunakos         ###   ########.fr       */
+/*   Updated: 2025/02/16 20:56:18 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	error_cmd_not_found(char *cmd)
+void	command_not_found_handle(char *cmd)
 {
 	char	*error_msg;
 
@@ -26,7 +26,7 @@ void	execute_cmd(char **cmd, char **envp)
 	if (access(cmd[0], F_OK) == -1)
 	{
 		if (ft_strchr (cmd[0], '/') == NULL)
-			error_cmd_not_found(cmd[0]);
+			command_not_found_handle(cmd[0]);
 		else
 			perror(cmd[0]);
 		exit(127);

@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/16 22:53:45 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/18 17:11:22 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int		pipex(t_pipex *data, char **envp);
 /* child_process */
 void	child_process(t_fd *fd_data, t_pipex *data, char **envp, int i);
 void	execute_cmd(char **cmd, char **envp);
-void	setup_input_fd(t_pipex *data, int input_fd, int *current_pipe, int i);
+void	setup_input_fd(t_pipex *data, int input_fd, int i);
 void	setup_output_fd(t_pipex *data, int *current_pipe, int i);
 
 /* fill cmds */

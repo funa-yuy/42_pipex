@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/16 23:24:04 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/18 17:08:01 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ int	wait_status(pid_t last_pid)
 int	pipex(t_pipex *data, char **envp)
 {
 	t_fd	fd_data;
-	int		input_fd;
 	int		i;
 	pid_t	pid;
 

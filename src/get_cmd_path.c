@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:38:03 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/16 22:52:23 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/18 17:08:57 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,6 @@ char	*find_in_path(char *argv, char **envp)
 
 char	*get_cmd_path(char *argv, char **envp)
 {
-	char	*path;
-	char	*cmd_path;
-	char	**dirs;
-	char	*tmp;
-
 	if (!argv || !envp)
 		return (NULL);
 	if (access(argv, X_OK) == 0)

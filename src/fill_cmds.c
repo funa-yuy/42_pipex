@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 21:06:49 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/16 23:23:40 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/18 17:08:28 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ char	**parse_command(char *argv, char **envp)
 char	***fill_cmds(t_pipex *data, char *argv[], char **envp)
 {
 	char	***cmds;
-	char	*path;
 	int		i;
 
 	cmds = (char ***)malloc(sizeof(char **) * (data->cmd_num + 1));

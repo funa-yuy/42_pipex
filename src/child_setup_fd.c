@@ -6,13 +6,13 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 22:33:25 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/16 01:56:30 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/02/18 17:11:05 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	setup_input_fd(t_pipex *data, int input_fd, int *current_pipe, int i)
+void	setup_input_fd(t_pipex *data, int input_fd, int i)
 {
 	if (i == 0)
 	{

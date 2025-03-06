@@ -6,16 +6,16 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 21:39:41 by mfunakos          #+#    #+#             */
-/*   Updated: 2025/02/13 15:43:49 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/03/06 14:16:49 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	error(char *msg)
+void	perror_exit(char *msg, int status)
 {
 	perror(msg);
-	exit(1);
+	exit(status);
 }
 
 void	free_double_pointer(char **str)

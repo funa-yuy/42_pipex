@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 21:47:26 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/18 17:08:01 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/03/06 14:14:38 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,25 +63,14 @@ int	main(int argc, char *argv[], char **envp)
 	int		exit_status;
 	t_pipex	data;
 
+	if (argc < 5)
+	{
+		write(2, "Not enough arguments.", ft_strlen("Not enough arguments."));
+		exit(1);
+	}
 	data_init(&data, argc, argv, envp);
 	exit_status = 0;
 	exit_status = pipex(&data, envp);
 	free_triple_pointer(data.cmds);
 	return (exit_status);
 }
-
-	// int		i;
-	// i = 0;
-	// int	j;
-	// while (i < data.cmd_num)
-	// {
-	// 	printf("cmds[%d]= ", i);
-	// 	j = 0;
-	// 	while (data.cmds[i][j] != NULL)
-	// 	{
-	// 		printf("\"%s\" ",data.cmds[i][j]);
-	// 		j++;
-	// 	}
-	// 	printf("\n");
-	// 	i++;
-	// }

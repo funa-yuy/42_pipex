@@ -6,7 +6,7 @@
 /*   By: miyuu <miyuu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 21:48:53 by miyuu             #+#    #+#             */
-/*   Updated: 2025/02/18 17:11:22 by miyuu            ###   ########.fr       */
+/*   Updated: 2025/03/06 13:53:32 by miyuu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,6 @@ void	after_exec_setup_fd(t_fd *fd_data, int i, int cmd_num);
 /* utils */
 void	free_double_pointer(char **str);
 void	free_triple_pointer(char ***str);
-void	error(char *msg);
+void	perror_exit(char *msg, int status);
 
 #endif
